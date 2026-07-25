@@ -7,50 +7,53 @@ import (
 	userservice "blog/internal/service/user"
 	poststorage "blog/internal/storage/post"
 	userstorage "blog/internal/storage/user"
-	"net/http"
+
+	"github.com/gin-contrib/gzip"
+	"github.com/gin-gonic/gin"
 )
 
-func Router(postDB poststorage.PostRepository, userDB userstorage.UserRepository, postHandler posthandler.PostHandler, userHandler userhandler.UserHandler, authUser userservice.AuthService, middleware middleware.Middleware) *http.ServeMux {
-	mux := http.NewServeMux()
+func Router(postDB poststorage.PostRepository, userDB userstorage.UserRepository, postHandler posthandler.PostHandler, userHandler userhandler.UserHandler, authUser userservice.AuthService, middleware middleware.Middleware) *gin.Engine {
+	r := gin.Default()
+	r.SetTrustedProxies(nil)
+	r.Use(gzip.Gzip(gzip.DefaultCompression))
+	r.NoRoute(func(c *gin.Context) {
+		c.File("./web/not_found.html")
+	})
 
-	FsMain := http.FileServer(http.Dir("web"))
-	mux.Handle("/", middleware.SecureHeaders(FsMain))
-	fsArticles := http.FileServer(http.Dir("web/article"))
-	mux.Handle("GET /web/articles", middleware.SecureHeaders(http.StripPrefix("/web/articles/", fsArticles)))
-	fsAuth := http.FileServer(http.Dir("web/auth"))
-	mux.Handle("GET /web/auth", middleware.SecureHeaders(http.StripPrefix("/web/auth/", fsAuth)))
-	fsProfile := http.FileServer(http.Dir("web/profile"))
-	mux.Handle("GET /web/profile", middleware.SecureHeaders(http.StripPrefix("/web/profile/", fsProfile)))
+	r.GET("/", middleware.SecureHeaders(), postHandler.ServePage("./web/index.html"))
+	r.GET("/terms", middleware.SecureHeaders(), postHandler.ServePage("./web/terms.html"))
+	r.GET("/privacy", middleware.SecureHeaders(), postHandler.ServePage("./web/privacy.html"))
+	r.GET("/not_found", middleware.SecureHeaders(), postHandler.ServePage("./web/not_found.html"))
 
-	mux.Handle("GET /privacy", middleware.SecureHeaders(http.HandlerFunc(postHandler.PrivacyPageHandler)))
-	mux.Handle("GET /terms", middleware.SecureHeaders(http.HandlerFunc(postHandler.TermsPageHandler)))
-	mux.Handle("GET /not_found", middleware.SecureHeaders(http.HandlerFunc(postHandler.NotFoundPageHandler)))
-	mux.Handle("GET /api/auth", middleware.SecureHeaders(http.HandlerFunc(userHandler.IsAuth)))
-	mux.Handle("GET /auth/register", middleware.SecureHeaders(http.HandlerFunc(userHandler.RegisterPageHandler)))
-	mux.Handle("POST /auth/register", middleware.SecureHeaders(http.HandlerFunc(userHandler.RegisterHandler)))
-	mux.Handle("GET /auth/login", middleware.SecureHeaders(http.HandlerFunc(userHandler.LoginPageHandler)))
-	mux.Handle("POST /auth/login", middleware.SecureHeaders(http.HandlerFunc(userHandler.LoginHandler)))
-	mux.Handle("GET /article/{Id}", middleware.SecureHeaders(http.HandlerFunc(postHandler.ArticlePageHandler)))
-	mux.Handle("GET /api/articles/{Id}", middleware.SecureHeaders(http.HandlerFunc(postHandler.GetArticleByIdHandler)))
-	mux.Handle("GET /api/articles", middleware.SecureHeaders(http.HandlerFunc(postHandler.GetArticlesHandler)))
-	mux.Handle("GET /api/comments/{Id}", middleware.SecureHeaders(http.HandlerFunc(postHandler.GetArticleComments)))
-	mux.Handle("GET /profile", middleware.SecureHeaders(http.HandlerFunc(userHandler.MainProfilePageHandler)))
-	mux.Handle("GET /user_profile/{Id}", middleware.SecureHeaders(http.HandlerFunc(userHandler.UserProfilePageHandler)))
+	r.GET("/api/auth", middleware.SecureHeaders(), userHandler.IsAuth)
+	r.GET("/auth/register", middleware.SecureHeaders(), postHandler.ServePage("./web/auth/register.html"))
+	r.POST("/auth/register", middleware.SecureHeaders(), userHandler.RegisterHandler)
+	r.GET("/auth/login", middleware.SecureHeaders(), postHandler.ServePage("./web/auth/login.html"))
+	r.POST("/auth/login", middleware.SecureHeaders(), userHandler.LoginHandler)
 
-	mux.Handle("POST /api/logout", middleware.RequireAuth(http.HandlerFunc(userHandler.LogoutHandler)))
-	mux.Handle("POST /api/users", middleware.RequireAuth(http.HandlerFunc(userHandler.GetArticleAuthorHandler)))
-	mux.Handle("GET /api/profile", middleware.RequireAuth(http.HandlerFunc(userHandler.ProfileHandler)))
-	mux.Handle("PUT /api/profile/username", middleware.RequireAuth(http.HandlerFunc(userHandler.ChangeUsernameHandler)))
-	mux.Handle("PUT /api/profile/password", middleware.RequireAuth(http.HandlerFunc(userHandler.ChangePasswordHandler)))
-	mux.Handle("PUT /api/profile/bio", middleware.RequireAuth(http.HandlerFunc(userHandler.ChangeBioHandler)))
-	mux.Handle("GET /profile/settings", middleware.RequireAuth(http.HandlerFunc(userHandler.SettingsPageHandler)))
-	mux.Handle("POST /api/articles", middleware.RequireAuth(http.HandlerFunc(postHandler.InsertArticleHandler)))
-	mux.Handle("PUT /api/articles", middleware.RequireAuth(http.HandlerFunc(postHandler.UpdateArticleHandler)))
-	mux.Handle("DELETE /api/articles", middleware.RequireAuth(http.HandlerFunc(postHandler.DeleteArticleHandler)))
-	mux.Handle("GET /article/create", middleware.RequireAuth(http.HandlerFunc(postHandler.CreateArticlePageHandler)))
-	mux.Handle("GET /article/update/{Id}", middleware.RequireAuth(http.HandlerFunc(postHandler.UpdateArticlePageHandler)))
-	mux.Handle("POST /api/comments", middleware.SecureHeaders(http.HandlerFunc(postHandler.InsertCommentHandler)))
+	r.GET("/api/profile", middleware.RequireAuth(), userHandler.ProfileHandler)
+	r.PUT("/api/profile/username", middleware.RequireAuth(), userHandler.ChangeUsernameHandler)
+	r.PUT("/api/profile/password", middleware.RequireAuth(), userHandler.ChangePasswordHandler)
+	r.PUT("/api/profile/bio", middleware.RequireAuth(), userHandler.ChangeBioHandler)
+	r.GET("/profile", middleware.RequireAuth(), postHandler.ServePage("./web/profile/main_profile.html"))
+	r.GET("/profile/settings", middleware.RequireAuth(), postHandler.ServePage("./web/profile/settings.html"))
 
-	return mux
+	r.GET("/api/articles", middleware.SecureHeaders(), postHandler.GetArticlesHandler)
+	r.GET("/api/articles/:Id", middleware.SecureHeaders(), postHandler.GetArticleByIdHandler)
+	r.POST("/api/articles", middleware.RequireAuth(), postHandler.InsertArticleHandler)
+	r.PUT("/api/articles", middleware.RequireAuth(), postHandler.UpdateArticleHandler)
+	r.DELETE("/api/articles", middleware.RequireAuth(), postHandler.DeleteArticleHandler)
+	r.GET("/article/:Id", middleware.SecureHeaders(), postHandler.ServePage("./web/article/article.html"))
+	r.GET("/article/create", middleware.RequireAuth(), postHandler.ServePage("./web/article/create_article.html"))
+	r.GET("/article/update/:Id", middleware.RequireAuth(), postHandler.ServePage("./web/article/update_article.html"))
 
+	r.GET("/api/comments/:Id", middleware.SecureHeaders(), postHandler.GetArticleComments)
+	r.POST("/api/comments", middleware.RequireAuth(), postHandler.InsertCommentHandler)
+
+	r.POST("/api/logout", middleware.RequireAuth(), userHandler.LogoutHandler)
+	r.POST("/api/users", middleware.RequireAuth(), userHandler.GetArticleAuthorHandler)
+
+	r.Static("/static", "./web/static")
+
+	return r
 }
