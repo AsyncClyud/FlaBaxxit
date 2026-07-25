@@ -2,88 +2,85 @@ package userhandler
 
 import (
 	"blog/internal/models"
-	"encoding/json"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
-func FormatIntoJson(w http.ResponseWriter, status int, payload string) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(status)
+func FormatIntoJson(c *gin.Context, status int, payload string) {
+	c.Header("Content-Type", "application/json")
 
 	var message models.Message = models.Message{Message: payload}
 
-	err := json.NewEncoder(w).Encode(message)
-	if err != nil {
-		http.Error(w, "Internal error!", http.StatusInternalServerError)
-	}
+	c.JSON(status, message)
 
 }
 
-func ResponseRegistration(status_code int, w http.ResponseWriter, r *http.Request) {
+func ResponseRegistration(status_code int, c *gin.Context) {
 	switch status_code {
 	case http.StatusOK:
-		FormatIntoJson(w, http.StatusOK, "Account has been created!")
+		FormatIntoJson(c, http.StatusOK, "Account has been created!")
 	case http.StatusBadRequest:
-		FormatIntoJson(w, http.StatusBadRequest, "Username must be at least 4 characters long!")
+		FormatIntoJson(c, http.StatusBadRequest, "Username must be at least 4 characters long!")
 	case http.StatusForbidden:
-		FormatIntoJson(w, http.StatusForbidden,"Captcha verification failed!")
+		FormatIntoJson(c, http.StatusForbidden, "Captcha verification failed!")
 	case http.StatusNotAcceptable:
-		FormatIntoJson(w, http.StatusNotAcceptable, "Username can only contain letters, numbers!")
+		FormatIntoJson(c, http.StatusNotAcceptable, "Username can only contain letters, numbers!")
 	case http.StatusConflict:
-		FormatIntoJson(w, http.StatusConflict, "Account with this username already exist!")
+		FormatIntoJson(c, http.StatusConflict, "Account with this username already exist!")
 	case http.StatusUnprocessableEntity:
-		FormatIntoJson(w, http.StatusUnprocessableEntity, "Password must be at least 6 characters long!")
+		FormatIntoJson(c, http.StatusUnprocessableEntity, "Password must be at least 6 characters long!")
 	case http.StatusBadGateway:
-		FormatIntoJson(w, http.StatusInternalServerError, "Internal error!")
+		FormatIntoJson(c, http.StatusInternalServerError, "Internal error!")
 	}
 }
 
-func ResponseLogin(status_code int, w http.ResponseWriter, r *http.Request) {
+func ResponseLogin(status_code int, c *gin.Context) {
 	switch status_code {
 	case http.StatusOK:
-		FormatIntoJson(w, http.StatusOK, "You has been successfully logined!")
+		FormatIntoJson(c, http.StatusOK, "You has been successfully logined!")
 	case http.StatusBadRequest:
-		FormatIntoJson(w, http.StatusBadRequest, "User with this username doesn't exist!")
+		FormatIntoJson(c, http.StatusBadRequest, "User with this username doesn't exist!")
 	case http.StatusForbidden:
-		FormatIntoJson(w, http.StatusForbidden,"Captcha verification failed!")
+		FormatIntoJson(c, http.StatusForbidden, "Captcha verification failed!")
 	case http.StatusNotFound:
-		FormatIntoJson(w, http.StatusNotFound, "Invalid password!")
+		FormatIntoJson(c, http.StatusNotFound, "Invalid password!")
 	case http.StatusNotAcceptable:
-		FormatIntoJson(w, http.StatusNotAcceptable, "Username can only contain letters, numbers!")
+		FormatIntoJson(c, http.StatusNotAcceptable, "Username can only contain letters, numbers!")
 	case http.StatusConflict:
-		FormatIntoJson(w, http.StatusConflict, "Account with this username already exist!")
+		FormatIntoJson(c, http.StatusConflict, "Account with this username already exist!")
 	case http.StatusUnprocessableEntity:
-		FormatIntoJson(w, http.StatusUnprocessableEntity, "Password must be at least 6 characters long!")
+		FormatIntoJson(c, http.StatusUnprocessableEntity, "Password must be at least 6 characters long!")
 	case http.StatusBadGateway:
-		FormatIntoJson(w, http.StatusInternalServerError, "Internal error!")
+		FormatIntoJson(c, http.StatusInternalServerError, "Internal error!")
 	}
 }
 
-func ResponseUsernameChange(status_code int, w http.ResponseWriter, r *http.Request) {
+func ResponseUsernameChange(status_code int, c *gin.Context) {
 	switch status_code {
 	case http.StatusOK:
-		FormatIntoJson(w, http.StatusOK, "Your username has been updated!")
+		FormatIntoJson(c, http.StatusOK, "Your username has been updated!")
 	case http.StatusBadRequest:
-		FormatIntoJson(w, http.StatusBadRequest, "Username is too short!")
+		FormatIntoJson(c, http.StatusBadRequest, "Username is too short!")
 	case http.StatusConflict:
-		FormatIntoJson(w, http.StatusConflict, "Username already in use!")
+		FormatIntoJson(c, http.StatusConflict, "Username already in use!")
 	}
 }
 
-func ResponseBioChange(status_code int, w http.ResponseWriter, r *http.Request) {
+func ResponseBioChange(status_code int, c *gin.Context) {
 	switch status_code {
 	case http.StatusOK:
-		FormatIntoJson(w, http.StatusOK, "Your bio has been updated!")
+		FormatIntoJson(c, http.StatusOK, "Your bio has been updated!")
 	case http.StatusBadRequest:
-		FormatIntoJson(w, http.StatusBadRequest, "Bio is too long! 2000 chars max!")
+		FormatIntoJson(c, http.StatusBadRequest, "Bio is too long! 2000 chars max!")
 	}
 }
 
-func ResponsePasswordChange(status_code int, w http.ResponseWriter, r *http.Request) {
+func ResponsePasswordChange(status_code int, c *gin.Context) {
 	switch status_code {
 	case http.StatusOK:
-		FormatIntoJson(w, http.StatusOK, "Password has been updated!")
+		FormatIntoJson(c, http.StatusOK, "Password has been updated!")
 	case http.StatusBadRequest:
-		FormatIntoJson(w, http.StatusBadRequest, "Incorrect password!")
+		FormatIntoJson(c, http.StatusBadRequest, "Incorrect password!")
 	}
 }
