@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -68,21 +69,13 @@ func (ur *AuthService) Validate_Token(tokenString string) (Id int, err error) {
 	return int(userID), nil
 }
 
-func (ur *AuthService) SetTokenInCookie(w http.ResponseWriter, id int) {
+func (ur *AuthService) SetTokenInCookie(c *gin.Context, id int) {
 	jwt_token, err := ur.Generate_Token(id)
 	if err != nil {
-		http.Error(w, "Internal error", http.StatusBadGateway)
+		c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
-	http.SetCookie(w, &http.Cookie{
-		Name:     "jwt-token",
-		Value:    jwt_token,
-		Path:     "/",
-		Secure:   true,
-		HttpOnly: true,
-		SameSite: http.SameSiteStrictMode,
-		MaxAge:   3200 * 20,
-	})
+	c.SetCookie("jwt-token", jwt_token, 3200*20, "/", "", true, true)
 }
 
 func (ur *AuthService) ValidateUserData(user models.User) (status_code int) {
