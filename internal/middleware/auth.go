@@ -5,6 +5,8 @@ import (
 	userservice "blog/internal/service/user"
 	"context"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Middleware struct {
@@ -15,35 +17,38 @@ func NewAuthMiddleware(service userservice.AuthService) *Middleware {
 	return &Middleware{Middleware: service}
 }
 
-func (md Middleware) SecureHeaders(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("X-Content-Type-Options", "nosniff")
-		w.Header().Set("Referrer-Policy", "strict-origin-when-cross-origin")
-		w.Header().Set("Permissions-Policy", "geolocation=(), microphone=(), camera=()")
-		w.Header().Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
+func (md Middleware) SecureHeaders() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		ctx.Header("X-Content-Type-Options", "nosniff")
+		ctx.Header("Referrer-Policy", "strict-origin-when-cross-origin")
+		ctx.Header("Permissions-Policy", "geolocation=(), microphone=(), camera=()")
+		ctx.Header("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
 
-		next.ServeHTTP(w, r)
-	})
+		ctx.Next()
+	}
 }
 
-func (md Middleware) RequireAuth(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("X-Content-Type-Options", "nosniff")
-		w.Header().Set("Referrer-Policy", "strict-origin-when-cross-origin")
-		w.Header().Set("Permissions-Policy", "geolocation=(), microphone=(), camera=()")
-		w.Header().Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
+func (md Middleware) RequireAuth() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		ctx.Header("X-Content-Type-Options", "nosniff")
+		ctx.Header("Referrer-Policy", "strict-origin-when-cross-origin")
+		ctx.Header("Permissions-Policy", "geolocation=(), microphone=(), camera=()")
+		ctx.Header("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
 
-		cookie, err := r.Cookie("jwt-token")
+		cookie, err := ctx.Cookie("jwt-token")
 		if err != nil {
-			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			ctx.AbortWithError(http.StatusUnauthorized, err)
 			return
 		}
-		claims, err := md.Middleware.Validate_Token(cookie.Value)
+		claims, err := md.Middleware.Validate_Token(cookie)
 		if err != nil {
-			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			ctx.AbortWithError(http.StatusUnauthorized, err)
 			return
 		}
-		ctx := context.WithValue(r.Context(), contextutil.UserIDKey, claims)
-		next.ServeHTTP(w, r.WithContext(ctx))
-	})
+
+		c := context.WithValue(ctx.Request.Context(), contextutil.UserIDKey, claims)
+		ctx.Request = ctx.Request.WithContext(c)
+
+		ctx.Next()
+	}
 }
