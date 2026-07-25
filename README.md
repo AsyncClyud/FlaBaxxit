@@ -1,6 +1,6 @@
-# clean-blog
+# FlaBaxxit
 
-**The official repo of Clean Blog**
+**The official repo of FlaBaxxit**
 
 This repository is designed to store project files, as well as in cases of critical crashes for the backward version.
 
@@ -10,4 +10,4 @@ This repository is designed to store project files, as well as in cases of criti
 - Data validation(in registration and authorization)
 - Create article and modificate them
 - Customization of profile (a standard avatar change is in development)
-- Comments under the article(in development)
+- Comments under the article
