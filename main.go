@@ -12,7 +12,6 @@ import (
 	poststorage "blog/internal/storage/post"
 	userstorage "blog/internal/storage/user"
 	"log"
-	"net/http"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -42,9 +41,9 @@ func main() {
 	log.Println("Server is started...")
 	log.Printf("Go to http://localhost:%v", cfg.Port)
 
-	err := http.ListenAndServe("0.0.0.0:"+cfg.Port, router)
+	err := router.Run()
 	if err != nil {
-		log.Fatalln(err)
+		panic(err)
 	}
 
 }
