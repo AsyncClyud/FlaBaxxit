@@ -28,6 +28,8 @@ func ResponseArticle(status_code int, c *gin.Context) {
 		FormatIntoJson(c, http.StatusUnauthorized, "You don't have permission to delete/edit this article!")
 	case http.StatusForbidden:
 		FormatIntoJson(c, http.StatusForbidden, "Captcha verification required!")
+	case http.StatusConflict:
+		FormatIntoJson(c, http.StatusBadRequest, "Article contains bad content! Please, be respectful")
 	}
 }
 
@@ -39,5 +41,7 @@ func ResponseComment(status_code int, c *gin.Context) {
 		FormatIntoJson(c, http.StatusBadRequest, "Comment content cannot be null!")
 	case http.StatusForbidden:
 		FormatIntoJson(c, http.StatusForbidden, "Captcha verification required!")
+	case http.StatusConflict:
+		FormatIntoJson(c, http.StatusBadRequest, "Comment contains bad content! Please, be respectful")
 	}
 }

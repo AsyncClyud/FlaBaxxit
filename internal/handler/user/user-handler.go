@@ -59,8 +59,8 @@ func (ush *UserHandler) RegisterHandler(c *gin.Context) {
 		ResponseRegistration(status_code, c)
 		return
 	}
-
-	status_code, id := ush.authService.Register(user)
+	ctx := c.Request.Context()
+	status_code, id := ush.authService.Register(ctx, user)
 	if status_code == 200 {
 		ush.authService.SetTokenInCookie(c, id)
 		ResponseRegistration(status_code, c)
@@ -89,8 +89,8 @@ func (ush *UserHandler) LoginHandler(c *gin.Context) {
 		ResponseLogin(status_code, c)
 		return
 	}
-
-	status_code, id := ush.authService.Login(user)
+	ctx := c.Request.Context()
+	status_code, id := ush.authService.Login(ctx, user)
 	if status_code == 200 {
 		ush.authService.SetTokenInCookie(c, id)
 		ResponseLogin(status_code, c)
@@ -110,8 +110,8 @@ func (ush *UserHandler) ProfileHandler(c *gin.Context) {
 		c.AbortWithStatus(http.StatusUnauthorized)
 		return
 	}
-
-	user, status_code := ush.authService.FetchUser(userID)
+	ctx := c.Request.Context()
+	user, status_code := ush.authService.FetchUser(ctx, userID)
 	if status_code != http.StatusOK {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"Message": "Cannot fetch user data"})
 		return
@@ -140,8 +140,8 @@ func (ush *UserHandler) ChangeUsernameHandler(c *gin.Context) {
 		c.AbortWithError(http.StatusUnauthorized, ok)
 		return
 	}
-
-	status_code := ush.authService.ChangeUsername(user, claims)
+	ctx := c.Request.Context()
+	status_code := ush.authService.ChangeUsername(ctx, user, claims)
 	ResponseUsernameChange(status_code, c)
 }
 
@@ -164,8 +164,8 @@ func (ush *UserHandler) ChangeBioHandler(c *gin.Context) {
 		c.AbortWithError(http.StatusUnauthorized, ok)
 		return
 	}
-
-	status_code := ush.authService.ChangeBio(user, claims)
+	ctx := c.Request.Context()
+	status_code := ush.authService.ChangeBio(ctx, user, claims)
 	ResponseBioChange(status_code, c)
 }
 
@@ -188,8 +188,8 @@ func (ush *UserHandler) ChangePasswordHandler(c *gin.Context) {
 		c.AbortWithError(http.StatusUnauthorized, ok)
 		return
 	}
-
-	status_code := ush.authService.ChangePassword(passwords, claims)
+	ctx := c.Request.Context()
+	status_code := ush.authService.ChangePassword(ctx, passwords, claims)
 	ResponsePasswordChange(status_code, c)
 }
 

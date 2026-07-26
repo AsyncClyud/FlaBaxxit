@@ -32,7 +32,8 @@ func (psh *PostHandler) ServePage(html_file string) gin.HandlerFunc {
 func (psh *PostHandler) GetArticlesHandler(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
 
-	articles := psh.postService.GetArticles()
+	ctx := c.Request.Context()
+	articles := psh.postService.GetArticles(ctx)
 
 	c.JSON(http.StatusOK, articles)
 }
@@ -40,13 +41,14 @@ func (psh *PostHandler) GetArticlesHandler(c *gin.Context) {
 func (psh *PostHandler) GetArticleByIdHandler(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
 
+	ctx := c.Request.Context()
 	Id, err := strconv.Atoi(c.Param("Id"))
 	if err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
-	article := psh.postService.GetArticleById(Id)
+	article := psh.postService.GetArticleById(ctx, Id)
 
 	c.JSON(http.StatusOK, article)
 }
@@ -81,7 +83,8 @@ func (psh *PostHandler) InsertArticleHandler(c *gin.Context) {
 		c.AbortWithError(http.StatusUnauthorized, err)
 		return
 	}
-	status_code := psh.postService.InsertArticle(article, userID)
+	ctx := c.Request.Context()
+	status_code := psh.postService.InsertArticle(ctx, article, userID)
 	ResponseArticle(status_code, c)
 }
 
@@ -119,7 +122,8 @@ func (psh *PostHandler) UpdateArticleHandler(c *gin.Context) {
 		c.AbortWithError(http.StatusUnauthorized, err)
 		return
 	}
-	status_code := psh.postService.UpdateArticle(article)
+	ctx := c.Request.Context()
+	status_code := psh.postService.UpdateArticle(ctx, article)
 	ResponseArticle(status_code, c)
 }
 
@@ -147,18 +151,20 @@ func (psh *PostHandler) DeleteArticleHandler(c *gin.Context) {
 		ResponseArticle(http.StatusForbidden, c)
 		return
 	}
-	psh.postService.DeleteArticle(article)
+	ctx := c.Request.Context()
+	psh.postService.DeleteArticle(ctx, article)
 }
 
 func (psh *PostHandler) GetArticleComments(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
 
+	ctx := c.Request.Context()
 	id, ok := strconv.Atoi(c.Param("Id"))
 	if ok != nil {
 		c.AbortWithError(http.StatusBadRequest, ok)
 	}
 
-	comments := psh.postService.GetArticleCommentsById(id)
+	comments := psh.postService.GetArticleCommentsById(ctx, id)
 
 	c.JSON(http.StatusOK, comments)
 }
@@ -193,6 +199,7 @@ func (psh *PostHandler) InsertCommentHandler(c *gin.Context) {
 		c.AbortWithError(http.StatusUnauthorized, err)
 		return
 	}
-	status_code := psh.postService.InsertComment(comment, userID)
+	ctx := c.Request.Context()
+	status_code := psh.postService.InsertComment(ctx, comment, userID)
 	ResponseComment(status_code, c)
 }
