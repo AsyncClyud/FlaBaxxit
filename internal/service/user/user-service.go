@@ -4,6 +4,7 @@ import (
 	_ "blog/internal/config"
 	"blog/internal/models"
 	userstorage "blog/internal/storage/user"
+	"context"
 	"fmt"
 	"net/http"
 	"strings"
@@ -91,15 +92,15 @@ func (ur *AuthService) ValidateUserData(user models.User) (status_code int) {
 	return http.StatusOK
 }
 
-func (ur *AuthService) FetchUser(user_id int) (user string, status_code int) {
-	user, err := ur.repo.GetUserInfo(user_id)
+func (ur *AuthService) FetchUser(ctx context.Context, user_id int) (user string, status_code int) {
+	user, err := ur.repo.GetUserInfo(ctx, user_id)
 	if err != nil {
 		return "", http.StatusBadRequest
 	}
 	return user, http.StatusOK
 }
 
-func (ur *AuthService) Register(user models.User) (status_code, id int) {
+func (ur *AuthService) Register(ctx context.Context, user models.User) (status_code, id int) {
 	if code := ur.ValidateUserData(user); code != http.StatusOK {
 		return code, 0
 	}
@@ -109,18 +110,18 @@ func (ur *AuthService) Register(user models.User) (status_code, id int) {
 	}
 	new_user := models.User{Username: user.Username, Password: hashed_password}
 
-	id, message := ur.repo.CreateUser(new_user)
+	id, message := ur.repo.CreateUser(ctx, new_user)
 	if !message {
 		return http.StatusConflict, 0
 	}
 	return http.StatusOK, id
 }
 
-func (ur *AuthService) Login(user models.User) (status_code, id int) {
+func (ur *AuthService) Login(ctx context.Context, user models.User) (status_code, id int) {
 	if code := ur.ValidateUserData(user); code != http.StatusOK {
 		return code, 0
 	}
-	id, hashed_password, ok := ur.repo.CheckIfUserExist(user)
+	id, hashed_password, ok := ur.repo.CheckIfUserExist(ctx, user)
 	if !ok {
 		return http.StatusNotFound, 0
 	}
@@ -130,12 +131,12 @@ func (ur *AuthService) Login(user models.User) (status_code, id int) {
 	return http.StatusOK, id
 }
 
-func (ur *AuthService) ChangeUsername(user models.User, user_id int) (status_code int) {
+func (ur *AuthService) ChangeUsername(ctx context.Context, user models.User, user_id int) (status_code int) {
 	if len(user.Username) <= 2 {
 		return http.StatusBadRequest
 	}
 
-	message := ur.repo.UpdateUsername(user, user_id)
+	message := ur.repo.UpdateUsername(ctx, user, user_id)
 	if !message {
 		return http.StatusConflict
 	}
@@ -143,8 +144,8 @@ func (ur *AuthService) ChangeUsername(user models.User, user_id int) (status_cod
 
 }
 
-func (ur *AuthService) ChangeBio(user models.User, user_id int) (status_code int) {
-	message := ur.repo.UpdateBio(user, user_id)
+func (ur *AuthService) ChangeBio(ctx context.Context, user models.User, user_id int) (status_code int) {
+	message := ur.repo.UpdateBio(ctx, user, user_id)
 	if !message {
 		return http.StatusBadRequest
 	}
@@ -153,8 +154,8 @@ func (ur *AuthService) ChangeBio(user models.User, user_id int) (status_code int
 
 }
 
-func (ur *AuthService) ChangePassword(password models.NewPassword, user_id int) (status_code int) {
-	hashed_password, _ := ur.repo.GetUserPassword(user_id)
+func (ur *AuthService) ChangePassword(ctx context.Context, password models.NewPassword, user_id int) (status_code int) {
+	hashed_password, _ := ur.repo.GetUserPassword(ctx, user_id)
 	if ur.CheckPaswordHash(password.Old_Password, hashed_password) != nil {
 		return http.StatusBadRequest
 	}
@@ -162,7 +163,7 @@ func (ur *AuthService) ChangePassword(password models.NewPassword, user_id int) 
 	if err != nil {
 		return http.StatusBadGateway
 	}
-	message := ur.repo.UpdatePassword(hashed_password, user_id)
+	message := ur.repo.UpdatePassword(ctx, hashed_password, user_id)
 	if !message {
 		return http.StatusBadRequest
 	}

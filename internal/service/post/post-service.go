@@ -2,7 +2,9 @@ package postservice
 
 import (
 	"blog/internal/models"
+	"blog/internal/moderation"
 	poststorage "blog/internal/storage/post"
+	"context"
 	"net/http"
 )
 
@@ -24,34 +26,47 @@ func (pr PostService) ValidateArticle(article models.Article) (status_code int) 
 	return http.StatusOK
 }
 
-func (pr PostService) GetArticles() (articles string) {
-	return pr.repo.GetAllArticles()
+func (pr PostService) GetArticles(ctx context.Context) (articles string) {
+	return pr.repo.GetAllArticles(ctx)
 }
 
-func (pr PostService) GetArticleById(id int) (article string) {
-	return pr.repo.GetArticleById(id)
+func (pr PostService) GetArticleById(ctx context.Context, id int) (article string) {
+	return pr.repo.GetArticleById(ctx, id)
 }
 
-func (pr PostService) InsertArticle(article models.Article, Author_Id int) (status_code int) {
+func (pr PostService) InsertArticle(ctx context.Context, article models.Article, Author_Id int) (status_code int) {
 	status := pr.ValidateArticle(article)
 	if status == 400 {
 		return http.StatusBadRequest
 	}
-	pr.repo.InsertArticle(article, Author_Id)
+	contains_bad_title := moderation.ModerateText(article.Title)
+	contains_bad_article := moderation.ModerateText(article.Content)
+	if contains_bad_title == true || contains_bad_article == true {
+		return http.StatusConflict
+	}
+
+	pr.repo.InsertArticle(ctx, article, Author_Id)
 	return http.StatusOK
 }
 
-func (pr PostService) UpdateArticle(article models.Article) (status_code int) {
+func (pr PostService) UpdateArticle(ctx context.Context, article models.Article) (status_code int) {
 	status := pr.ValidateArticle(article)
 	if status == 400 {
 		return http.StatusBadRequest
 	}
-	pr.repo.UpdateArticle(article)
+	contains_bad_title := moderation.ModerateText(article.Title)
+	contains_bad_article := moderation.ModerateText(article.Content)
+
+	if contains_bad_title == true || contains_bad_article == true {
+		return http.StatusConflict
+	}
+
+	pr.repo.UpdateArticle(ctx, article)
 	return http.StatusOK
 }
 
-func (pr PostService) DeleteArticle(article models.Article) {
-	pr.repo.DeleteArticle(article)
+func (pr PostService) DeleteArticle(ctx context.Context, article models.Article) {
+	pr.repo.DeleteArticle(ctx, article)
 }
 
 func (pr PostService) ValidateComment(comment models.Comment) (status_code int) {
@@ -61,15 +76,20 @@ func (pr PostService) ValidateComment(comment models.Comment) (status_code int) 
 	return http.StatusOK
 }
 
-func (pr PostService) GetArticleCommentsById(id int) (comments string) {
-	return pr.repo.GetArticleCommentsById(id)
+func (pr PostService) GetArticleCommentsById(ctx context.Context, id int) (comments string) {
+	return pr.repo.GetArticleCommentsById(ctx, id)
 }
 
-func (pr PostService) InsertComment(comment models.Comment, author_id int) (status_code int) {
+func (pr PostService) InsertComment(ctx context.Context, comment models.Comment, author_id int) (status_code int) {
 	status := pr.ValidateComment(comment)
 	if status != http.StatusOK {
 		return status
 	}
-	pr.repo.InsertComment(comment, author_id)
+	contains_bad_content := moderation.ModerateText(comment.Comment_content)
+	if contains_bad_content == true{
+		return http.StatusUnprocessableEntity
+	}
+
+	pr.repo.InsertComment(ctx, comment, author_id)
 	return http.StatusOK
 }
