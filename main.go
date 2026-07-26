@@ -11,6 +11,7 @@ import (
 	"blog/internal/storage"
 	poststorage "blog/internal/storage/post"
 	userstorage "blog/internal/storage/user"
+	"context"
 	"log"
 	"os"
 
@@ -24,8 +25,8 @@ func main() {
 	}
 
 	cfg := config.Load()
-
-	db := storage.ConnectDataBase(os.Getenv("DATABASE_URL"))
+	ctx := context.Background()
+	db := storage.ConnectDataBase(ctx, os.Getenv("DATABASE_URL"))
 	defer db.Close()
 
 	postDB := poststorage.NewPostRepo(db)
