@@ -38,14 +38,16 @@
             <h3 class="text-[3vh] m-[10px]">Content</h3>
             <textarea class="w-[40vw] bg-[white] text-[black] resize-none rounded-[2px]" id="content" rows="15" cols="50" placeholder="Type a article content..."></textarea> <br>
             <button class="w-fit bg-[white] text-[black] text-[JetBrains_Mono] rounded-[5px] m-[10px] p-[5px]" type="button" onclick="SendCreateArticleRequest()">Post</button>
-            <div class="cf-turnstile" id="turnstile-widget" data-sitekey="0x4AAAAAAD9i83m-xS3y164A" data-theme="dark" data-size="flexible"></div>
+            <div class="cf-turnstile" id="turnstile-widget" data-sitekey="0x4AAAAAAD2vzJ6mzrrweUrN" data-theme="dark"></div>
             <p id="status"></p>
         </div>
     </main>
-    <footer class="h-[8vh] w-auto row-[3] bg-[#212830] text-center text-[gainsboro] font-[JetBrains_Mono] outline-[3px] outline-solid outline-[#151b23]" id="footer">
-        <a class="m-[5px] text-[gainsboro]" href="https://github.com/AsyncClyud/clean-blog" target="_blank">Github</a>
-        <a class="m-[5px] text-[gainsboro]" href="/privacy">Privacy Policy</a>
-        <a class="m-[5px] text-[gainsboro]" href="/terms">Terms of Service</a>
+    <footer class="h-[10vh] w-auto row-[3] bg-[#212830] text-center font-[JetBrains_Mono] outline-[3px] outline-solid outline-[#151b23]" id="footer">
+        <div class="mr-auto flex flex-col">
+            <a class="m-[5px] text-[#6f6f76]" href="/privacy">Privacy Policy</a>
+            <a class="m-[5px] text-[#6f6f76]" href="/terms">Terms of use</a>
+            <p class="text-[#6f6f76]">&copy; 2026 FlaBaxxit. All copyright reversed.</p>
+        </div>
     </footer>
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </body>
