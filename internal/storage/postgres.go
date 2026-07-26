@@ -1,16 +1,25 @@
 package storage
 
 import (
-	"database/sql"
+	"context"
 	"log"
 
+	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/lib/pq"
 )
 
-func ConnectDataBase(connStr string) *sql.DB {
-	db, err := sql.Open("postgres", connStr)
+func ConnectDataBase(ctx context.Context, connStr string) *pgxpool.Pool {
+	config, err := pgxpool.ParseConfig(connStr)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatalf("Parse config error: %v", err)
+	}
+
+	config.MinConns = 10
+	config.MaxConns = 40
+
+	db, err := pgxpool.NewWithConfig(ctx, config)
+	if err != nil {
+		log.Fatalf("Pgxpool connection error: %v", err)
 	}
 
 	return db

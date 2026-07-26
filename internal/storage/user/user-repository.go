@@ -2,27 +2,28 @@ package userstorage
 
 import (
 	"blog/internal/models"
-	"database/sql"
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
 	"time"
 
+	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/lib/pq"
 )
 
 type UserRepository struct {
-	db *sql.DB
+	db *pgxpool.Pool
 }
 
-func NewUserRepo(db *sql.DB) *UserRepository {
+func NewUserRepo(db *pgxpool.Pool) *UserRepository {
 	return &UserRepository{db: db}
 }
 
-func (ur *UserRepository) CheckIfUserExist(User models.User) (user_id int, hashed_password string, success bool) {
+func (ur *UserRepository) CheckIfUserExist(ctx context.Context, User models.User) (user_id int, hashed_password string, success bool) {
 	var user models.User
 	var users []models.User
-	rows, err := ur.db.Query("SELECT Id, Password FROM users WHERE Username = $1", User.Username)
+	rows, err := ur.db.Query(ctx, "SELECT Id, Password FROM users WHERE Username = $1", User.Username)
 	if err != nil {
 		rows.Err()
 	}
@@ -43,8 +44,8 @@ func (ur *UserRepository) CheckIfUserExist(User models.User) (user_id int, hashe
 
 }
 
-func (ur *UserRepository) GetUserInfo(user_id int) (user_info string, err error) {
-	rows, err := ur.db.Query("SELECT Username, Bio, Created_at FROM Users WHERE Id = $1", user_id)
+func (ur *UserRepository) GetUserInfo(ctx context.Context, user_id int) (user_info string, err error) {
+	rows, err := ur.db.Query(ctx, "SELECT Username, Bio, Created_at::text FROM Users WHERE Id = $1", user_id)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -67,9 +68,9 @@ func (ur *UserRepository) GetUserInfo(user_id int) (user_info string, err error)
 	return string(result), nil
 }
 
-func (ur *UserRepository) GetUserPassword(user_id int) (hashed_password string, err error) {
+func (ur *UserRepository) GetUserPassword(ctx context.Context, user_id int) (hashed_password string, err error) {
 	var user models.User
-	rows, err := ur.db.Query("SELECT Password FROM users WHERE Id = $1", user_id)
+	rows, err := ur.db.Query(ctx, "SELECT Password FROM users WHERE Id = $1", user_id)
 	if err != nil {
 		return "", rows.Err()
 	}
@@ -84,16 +85,16 @@ func (ur *UserRepository) GetUserPassword(user_id int) (hashed_password string, 
 	return user.Password, nil
 }
 
-func (ur *UserRepository) CreateUser(new_user models.User) (user_id int, success bool) {
-	_, _, UserExist := ur.CheckIfUserExist(new_user)
+func (ur *UserRepository) CreateUser(ctx context.Context, new_user models.User) (user_id int, success bool) {
+	_, _, UserExist := ur.CheckIfUserExist(ctx, new_user)
 	var user models.User
 	if !UserExist {
-		_, err := ur.db.Exec("INSERT INTO Users(Username, Password, Bio, Created_at) VALUES($1, $2, $3, $4)", new_user.Username, new_user.Password, "", time.Now())
+		_, err := ur.db.Exec(ctx, "INSERT INTO Users(Username, Password, Bio, Created_at) VALUES($1, $2, $3, $4)", new_user.Username, new_user.Password, "", time.Now())
 		if err != nil {
 			log.Printf("User Query error: %v", err)
 			return 0, false
 		}
-		rows, err := ur.db.Query("SELECT Id FROM Users WHERE Username = $1", new_user.Username)
+		rows, err := ur.db.Query(ctx, "SELECT Id FROM Users WHERE Username = $1", new_user.Username)
 		if err != nil {
 			log.Printf("User Query error: %v", rows.Err())
 			return 0, false
@@ -113,10 +114,10 @@ func (ur *UserRepository) CreateUser(new_user models.User) (user_id int, success
 	return user.Id, true
 }
 
-func (ur *UserRepository) UpdateUsername(user models.User, user_id int) (success bool) {
-	_, _, UsernameExist := ur.CheckIfUserExist(user)
+func (ur *UserRepository) UpdateUsername(ctx context.Context, user models.User, user_id int) (success bool) {
+	_, _, UsernameExist := ur.CheckIfUserExist(ctx, user)
 	if !UsernameExist {
-		_, err := ur.db.Exec("UPDATE Users SET Username = $1 WHERE Id = $2", user.Username, user_id)
+		_, err := ur.db.Exec(ctx, "UPDATE Users SET Username = $1 WHERE Id = $2", user.Username, user_id)
 		if err != nil {
 			log.Printf("User Query error: %v", err)
 			return false
@@ -126,8 +127,8 @@ func (ur *UserRepository) UpdateUsername(user models.User, user_id int) (success
 	return false
 }
 
-func (ur *UserRepository) UpdateBio(user models.User, user_id int) (success bool) {
-	_, err := ur.db.Exec("UPDATE Users SET Bio = $1 WHERE Id = $2", user.Bio, user_id)
+func (ur *UserRepository) UpdateBio(ctx context.Context, user models.User, user_id int) (success bool) {
+	_, err := ur.db.Exec(ctx, "UPDATE Users SET Bio = $1 WHERE Id = $2", user.Bio, user_id)
 	if err != nil {
 		log.Printf("User Query error: %v", err)
 		return false
@@ -136,8 +137,8 @@ func (ur *UserRepository) UpdateBio(user models.User, user_id int) (success bool
 	return true
 }
 
-func (ur *UserRepository) UpdatePassword(new_password string, user_id int) (success bool) {
-	_, err := ur.db.Exec("UPDATE Users SET Password = $1 WHERE Id = $2", new_password, user_id)
+func (ur *UserRepository) UpdatePassword(ctx context.Context, new_password string, user_id int) (success bool) {
+	_, err := ur.db.Exec(ctx, "UPDATE Users SET Password = $1 WHERE Id = $2", new_password, user_id)
 	if err != nil {
 		log.Printf("User Query error: %v", err)
 		return false

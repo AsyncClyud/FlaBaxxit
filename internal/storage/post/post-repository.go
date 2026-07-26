@@ -2,26 +2,27 @@ package poststorage
 
 import (
 	"blog/internal/models"
-	"database/sql"
+	"context"
 	"encoding/json"
 	"log"
 	"time"
 
+	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/lib/pq"
 )
 
 type PostRepository struct {
-	db *sql.DB
+	db *pgxpool.Pool
 }
 
-func NewPostRepo(db *sql.DB) *PostRepository {
+func NewPostRepo(db *pgxpool.Pool) *PostRepository {
 	return &PostRepository{db: db}
 }
 
-func (pr *PostRepository) GetAllArticles() (all_articles string) {
+func (pr *PostRepository) GetAllArticles(ctx context.Context) (all_articles string) {
 	articles := []models.Article{}
 
-	rows, err := pr.db.Query("SELECT Id, Title FROM posts")
+	rows, err := pr.db.Query(ctx, "SELECT Id, Title FROM posts")
 	if err != nil {
 		log.Println("Rows error:", err)
 		rows.Err()
@@ -45,10 +46,10 @@ func (pr *PostRepository) GetAllArticles() (all_articles string) {
 	return string(result)
 }
 
-func (pr *PostRepository) GetArticleById(Id int) (byid_article string) {
+func (pr *PostRepository) GetArticleById(ctx context.Context, Id int) (byid_article string) {
 	var article models.Article
 
-	rows, err := pr.db.Query("SELECT Title, Content, Created_At, Author FROM posts WHERE Id = $1", Id)
+	rows, err := pr.db.Query(ctx, "SELECT Title, Content, Created_At::text, Author FROM posts WHERE Id = $1", Id)
 	if err != nil {
 		log.Println("Rows error:", err)
 		rows.Err()
@@ -69,42 +70,36 @@ func (pr *PostRepository) GetArticleById(Id int) (byid_article string) {
 	return string(result)
 }
 
-func (pr *PostRepository) InsertArticle(article models.Article, author int) sql.Result {
-	result, err := pr.db.Exec(
-		"INSERT INTO Posts(Title, Content, Created_at, Author) VALUES ($1, $2, $3, $4)", article.Title, article.Content, time.Now(), author)
+func (pr *PostRepository) InsertArticle(ctx context.Context, article models.Article, author int) {
+	_, err := pr.db.Exec(
+		ctx, "INSERT INTO Posts(Title, Content, Created_at, Author) VALUES ($1, $2, $3, $4)", article.Title, article.Content, time.Now(), author)
 	if err != nil {
 		log.Println("Insert article query error:", err)
 	}
 	log.Printf("Inserted new article with title %v; Article author: %v", article.Title, author)
-
-	return result
 }
 
-func (pr *PostRepository) UpdateArticle(article models.Article) sql.Result {
-	result, err := pr.db.Exec(
-		"UPDATE Posts SET Title = $1, Content = $2 WHERE Id = $3", article.Title, article.Content, article.Id)
+func (pr *PostRepository) UpdateArticle(ctx context.Context, article models.Article) {
+	_, err := pr.db.Exec(
+		ctx, "UPDATE Posts SET Title = $1, Content = $2 WHERE Id = $3", article.Title, article.Content, article.Id)
 	if err != nil {
 		log.Println("Update article query error:", err)
 	}
 	log.Printf("Updated article with title: %v", article.Title)
-
-	return result
 }
 
-func (pr *PostRepository) DeleteArticle(article models.Article) sql.Result {
-	result, err := pr.db.Exec("DELETE FROM Posts WHERE Id = $1", article.Id)
+func (pr *PostRepository) DeleteArticle(ctx context.Context, article models.Article) {
+	_, err := pr.db.Exec(ctx, "DELETE FROM Posts WHERE Id = $1", article.Id)
 	if err != nil {
 		log.Println("Delete article query error:", err)
 	}
 	log.Printf("Deleted article with id: %v", article.Id)
-
-	return result
 }
 
-func (pr *PostRepository) GetArticleCommentsById(id int) (comment string) {
+func (pr *PostRepository) GetArticleCommentsById(ctx context.Context, id int) (comment string) {
 	var comments []models.Comment
 
-	rows, err := pr.db.Query("SELECT Comment_content, Created_at, Author FROM Comments WHERE Post_id = $1", id)
+	rows, err := pr.db.Query(ctx, "SELECT Comment_content, Created_at::text, Author FROM Comments WHERE Post_id = $1", id)
 	if err != nil {
 		log.Println("Rows error:", err)
 		rows.Err()
@@ -128,13 +123,11 @@ func (pr *PostRepository) GetArticleCommentsById(id int) (comment string) {
 
 }
 
-func (pr *PostRepository) InsertComment(comment models.Comment, author int) sql.Result {
-	result, err := pr.db.Exec(
-		"INSERT INTO Comments(Comment_content, Created_at, Post_id, Author) VALUES($1, $2, $3, $4)", comment.Comment_content, time.Now(), comment.Post_id, author)
+func (pr *PostRepository) InsertComment(ctx context.Context, comment models.Comment, author int) {
+	_, err := pr.db.Exec(
+		ctx, "INSERT INTO Comments(Comment_content, Created_at, Post_id, Author) VALUES($1, $2, $3, $4)", comment.Comment_content, time.Now(), comment.Post_id, author)
 	if err != nil {
 		log.Println("Insert comment query error:", err)
 	}
 	log.Printf("Inserted comment in post with id: %v", comment.Post_id)
-
-	return result
 }
