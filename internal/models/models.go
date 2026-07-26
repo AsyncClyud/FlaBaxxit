@@ -10,21 +10,21 @@ type User struct {
 }
 
 type Article struct {
-	Id              int    `json:"Id"`
-	Title           string `json:"Title"`
-	Content         string `json:"Content"`
-	Created_at      string `json:"Created_at"`
-	Author          int    `json:"Author"`
-	Turnstile_token string `json:"Turnstile_token"`
+	Id              int     `json:"Id"`
+	Title           string  `json:"Title"`
+	Content         string  `json:"Content"`
+	Created_at      *string `json:"Created_at"`
+	Author          int     `json:"Author"`
+	Turnstile_token string  `json:"Turnstile_token"`
 }
 
 type Comment struct {
-	Id              int    `json:"Id"`
-	Comment_content string `json:"Comment_content"`
-	Created_at      string `json:"Created_at"`
-	Post_id         int    `json:"Post_id"`
-	Author          int    `json:"Author"`
-	Turnstile_token string `json:"Turnstile_token"`
+	Id              int     `json:"Id"`
+	Comment_content string  `json:"Comment_content"`
+	Created_at      *string `json:"Created_at"`
+	Post_id         int     `json:"Post_id"`
+	Author          int     `json:"Author"`
+	Turnstile_token string  `json:"Turnstile_token"`
 }
 
 type Message struct {
