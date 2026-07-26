@@ -15,7 +15,7 @@ func ConnectDataBase(ctx context.Context, connStr string) *pgxpool.Pool {
 	}
 
 	config.MinConns = 10
-	config.MaxConns = 40
+	config.MaxConns = 45
 
 	db, err := pgxpool.NewWithConfig(ctx, config)
 	if err != nil {
