@@ -146,3 +146,14 @@ func (ur *UserRepository) UpdatePassword(ctx context.Context, new_password strin
 
 	return true
 }
+
+func (ur *UserRepository) DeleteAccount(ctx context.Context, user_id int) (success bool) {
+	log.Println(user_id)
+	_, err := ur.db.Exec(ctx, "DELETE FROM Users WHERE Id = $1", user_id)
+	if err != nil {
+		log.Printf("Delete account query error: %v", err)
+		return false
+	}
+
+	return true
+}
