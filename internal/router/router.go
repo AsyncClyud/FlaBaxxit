@@ -13,9 +13,9 @@ import (
 )
 
 func Router(postDB poststorage.PostRepository, userDB userstorage.UserRepository, postHandler posthandler.PostHandler, userHandler userhandler.UserHandler, authUser userservice.AuthService, middleware middleware.Middleware) *gin.Engine {
-	r := gin.Default()
+	r := gin.New()
 	r.SetTrustedProxies(nil)
-	r.Use(gzip.Gzip(gzip.DefaultCompression))
+	r.Use(gzip.Gzip(gzip.BestSpeed, gzip.WithMinLength(256)))
 	r.NoRoute(func(c *gin.Context) {
 		c.File("./web/not_found.html")
 	})
@@ -37,6 +37,8 @@ func Router(postDB poststorage.PostRepository, userDB userstorage.UserRepository
 	r.PUT("/api/profile/bio", middleware.RequireAuth(), userHandler.ChangeBioHandler)
 	r.GET("/profile", middleware.RequireAuth(), postHandler.ServePage("./web/profile/main_profile.html"))
 	r.GET("/profile/settings", middleware.RequireAuth(), postHandler.ServePage("./web/profile/settings.html"))
+	r.POST("/api/logout", middleware.RequireAuth(), userHandler.LogoutHandler)
+	r.DELETE("/api/users", middleware.RequireAuth(), userHandler.DeleteAccountHandler)
 
 	r.GET("/api/articles", middleware.SecureHeaders(), postHandler.GetArticlesHandler)
 	r.GET("/api/articles/:Id", middleware.SecureHeaders(), postHandler.GetArticleByIdHandler)
@@ -50,7 +52,6 @@ func Router(postDB poststorage.PostRepository, userDB userstorage.UserRepository
 	r.GET("/api/comments/:Id", middleware.SecureHeaders(), postHandler.GetArticleComments)
 	r.POST("/api/comments", middleware.RequireAuth(), postHandler.InsertCommentHandler)
 
-	r.POST("/api/logout", middleware.RequireAuth(), userHandler.LogoutHandler)
 	r.POST("/api/users", middleware.RequireAuth(), userHandler.GetArticleAuthorHandler)
 
 	r.Static("/static", "./web/static")
