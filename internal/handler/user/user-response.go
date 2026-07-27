@@ -84,3 +84,12 @@ func ResponsePasswordChange(status_code int, c *gin.Context) {
 		FormatIntoJson(c, http.StatusBadRequest, "Incorrect password!")
 	}
 }
+
+func ResponseAccountDelete(status_code int, c *gin.Context) {
+	switch status_code {
+	case http.StatusOK:
+		FormatIntoJson(c, http.StatusOK, "Account has been successfuly deleted!")
+	case http.StatusInternalServerError:
+		FormatIntoJson(c, http.StatusInternalServerError, "Internal error!")
+	}
+}

@@ -223,3 +223,18 @@ func (ush *UserHandler) GetArticleAuthorHandler(c *gin.Context) {
 func (ush *UserHandler) LogoutHandler(c *gin.Context) {
 	c.SetCookie("jwt-token", "", 0, "/", "", true, true)
 }
+
+func (ush *UserHandler) DeleteAccountHandler(c *gin.Context) {
+	cookie, exist := c.Cookie("jwt-token")
+	if exist != nil {
+		c.AbortWithError(http.StatusUnauthorized, exist)
+		return
+	}
+	claims, ok := ush.authService.Validate_Token(cookie)
+	if ok != nil {
+		c.AbortWithError(http.StatusUnauthorized, ok)
+		return
+	}
+	status_code := ush.authService.DeleteAccount(c.Request.Context(), claims)
+	ResponseAccountDelete(status_code, c)
+}
