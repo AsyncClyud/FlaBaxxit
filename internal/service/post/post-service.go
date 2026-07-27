@@ -86,7 +86,7 @@ func (pr PostService) InsertComment(ctx context.Context, comment models.Comment,
 		return status
 	}
 	contains_bad_content := moderation.ModerateText(comment.Comment_content)
-	if contains_bad_content == true{
+	if contains_bad_content == true {
 		return http.StatusUnprocessableEntity
 	}
 

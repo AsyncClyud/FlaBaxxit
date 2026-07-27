@@ -169,3 +169,10 @@ func (ur *AuthService) ChangePassword(ctx context.Context, password models.NewPa
 	}
 	return http.StatusOK
 }
+
+func (ur *AuthService) DeleteAccount(ctx context.Context, user_id int) (status_code int) {
+	if success := ur.repo.DeleteAccount(ctx, user_id); !success {
+		return http.StatusInternalServerError
+	}
+	return http.StatusOK
+}
