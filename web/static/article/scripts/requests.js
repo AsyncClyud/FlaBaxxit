@@ -173,8 +173,6 @@ async function SendCreateCommentRequest() {
   if (create_request.ok) {
     const message = await create_request.json()
     document.getElementById("status").textContent = message.Message
-    await new Promise(r => setTimeout(r, 2000));
-    window.location.replace("/profile")
   }
   else {
     const message = await create_request.json()

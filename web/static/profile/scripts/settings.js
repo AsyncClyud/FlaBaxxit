@@ -76,3 +76,23 @@ async function SendUpdatePasswordRequest() {
     document.getElementById("message_password").textContent = message.Message
   }
 }
+
+async function SendDeleteAccountRequest() {
+  const response = await fetch("/api/users", {
+    method: "DELETE"
+  })
+  const logout = await fetch("/api/logout", {
+    method: "POST",
+    credentials: "include"
+  })
+  if (response.ok) {
+    const message = await response.json()
+    document.getElementById("message_delete").textContent = message.Message
+    await new Promise(r => setTimeout(r, 2000));
+    window.location.replace("/")
+  }
+  else {
+    const message = await response.json()
+    document.getElementById("message_delete").textContent = message.Message
+  }
+}

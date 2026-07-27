@@ -12,7 +12,7 @@ async function FetchUserProfile() {
     user_info.setAttribute("id", "profile")
     user_info.innerHTML = `
       <div class="h-fit w-[70vw] bg-[#212121] rounded-[5px]" id="profile">
-      <img class="m-[5px] ml-auto mr-auto" src="/static/profile/images/avatar.webp" alt="Avatar" width="150" height="150">
+      <img class="m-[5px] ml-auto mr-auto" src="/static/images/avatar.webp" alt="Avatar" width="150" height="150">
       <h3 class="text-[4vh] m-[10px]" id="username">${data.Username}</h3>
       <p class="text-[2vh] m-[5px] px-8">${data.Bio}</p>
       <p class="text-[gray] m-[20px]">${data.Created_at}</p>

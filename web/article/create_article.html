@@ -26,23 +26,22 @@
 </head>
 
 <body class="min-h-[100vh] bg-[#212830] grid grid-rows-[auto_1fr_auto] m-[0]">
-    <header class="h-[13vh] w-auto bg-[#151b23] text-[white] font-[JetBrains_Mono] row-[1] outline-[2px] outline-solid outline-[#333c46]" id="header">
-        <h1 class="text-[5vh] text-[#d1d7e0] font-[JetBrains_Mono] m-[5px]">FlaBaxxit</h1>
-        <a class="bg-[#2a323c] text-[gainsboro] rounded-[3px] p-[5px] m-[5px]" href="/">Main<a>
+    <header class="h-[14vh] w-auto bg-[#151b23] text-[white] font-[JetBrains_Mono] row-[1] outline-[2px] outline-solid outline-[#333c46]" id="header">
+        <a class="text-[5vh] text-[#d1d7e0] font-[JetBrains_Mono] m-[5px]" href="/">FlaBaxxit</a> <br>
     </header>
     <main class="w-[70vw] grid grid-rows-[auto_auto_auto_auto] text-[#d1d7e0] text-center font-[JetBrains_Mono] m-[10px] mr-auto ml-auto content-center justify-center justify-items-center" id="main">
         <div class="h-fit w-[85vw] bg-[#212121] rows-[1] rounded-[5px]" id="editor">
             <h2 class="text-[4vh] m-[10px]">Create a new article</h2>
             <h3 class="text-[3vh] m-[10px]">Title</h3>
-            <input class="w-[20vw] bg-[white] text-[black] rounded-[2px]" type="text" placeholder="Type a article title..." id="title"> <br>
+            <input class="w-[45vw] bg-[white] text-[black] rounded-[2px]" type="text" placeholder="Type a article title..." id="title"> <br>
             <h3 class="text-[3vh] m-[10px]">Content</h3>
-            <textarea class="w-[40vw] bg-[white] text-[black] resize-none rounded-[2px]" id="content" rows="15" cols="50" placeholder="Type a article content..."></textarea> <br>
+            <textarea class="w-[50vw] bg-[white] text-[black] resize-none rounded-[2px]" id="content" rows="15" cols="50" placeholder="Type a article content..."></textarea> <br>
             <button class="w-fit bg-[white] text-[black] text-[JetBrains_Mono] rounded-[5px] m-[10px] p-[5px]" type="button" onclick="SendCreateArticleRequest()">Post</button>
             <div class="cf-turnstile" id="turnstile-widget" data-sitekey="0x4AAAAAAD9i83m-xS3y164A" data-theme="dark"></div>
             <p id="status"></p>
         </div>
     </main>
-    <footer class="h-[10vh] w-auto row-[3] bg-[#212830] text-center font-[JetBrains_Mono] outline-[3px] outline-solid outline-[#151b23]" id="footer">
+    <footer class="h-[10vh] w-auto row-[3] bg-[#212830] text-center font-[JetBrains_Mono]" id="footer">
         <div class="mr-auto flex flex-col">
             <a class="m-[5px] text-[#6f6f76]" href="/privacy">Privacy Policy</a>
             <a class="m-[5px] text-[#6f6f76]" href="/terms">Terms of use</a>
