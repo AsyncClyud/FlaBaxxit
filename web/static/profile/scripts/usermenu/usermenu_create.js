@@ -8,7 +8,7 @@ async function UserMenu() {
 
     const usermenu_button = document.createElement("button")
     usermenu_button.setAttribute("id", "usermenu_button")
-    usermenu_button.setAttribute("class", "w-12 h-12 bg-[url(/static/images/avatar.webp)] bg-center bg-cover rounded-full")
+    usermenu_button.setAttribute("class", "w-10 h-10 bg-[url(/static/images/4.webp)] bg-center bg-cover rounded-full")
     usermenu_button.setAttribute("onclick", "ShowUserMenu()")
 
     header_element.appendChild(usermenu_button)
