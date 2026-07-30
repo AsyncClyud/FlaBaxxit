@@ -85,6 +85,15 @@ func ResponsePasswordChange(status_code int, c *gin.Context) {
 	}
 }
 
+func ResponseAvatarChange(status_code int, c *gin.Context) {
+	switch status_code {
+	case http.StatusOK:
+		FormatIntoJson(c, http.StatusOK, "Avatar has been changed!")
+	case http.StatusInternalServerError:
+		FormatIntoJson(c, http.StatusInternalServerError, "Internal error!")
+	}
+}
+
 func ResponseAccountDelete(status_code int, c *gin.Context) {
 	switch status_code {
 	case http.StatusOK:

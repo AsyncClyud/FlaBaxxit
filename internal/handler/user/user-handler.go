@@ -2,11 +2,11 @@ package userhandler
 
 import (
 	"blog/internal/config"
-	"blog/internal/contextutil"
 	"blog/internal/models"
 	userservice "blog/internal/service/user"
 	captcha "blog/internal/turnstile"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -21,97 +21,16 @@ func NewUserHandler(service userservice.AuthService, config config.Config) *User
 	return &UserHandler{authService: service, Turnslite: *captcha.NewVerifier(config), Config: config}
 }
 
-func (ush *UserHandler) IsAuth(c *gin.Context) {
-	c.Header("Content-Type", "application/json")
-
-	cookie, err := c.Cookie("jwt-token")
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"authorized": false})
-		return
-	}
-	token, err := ush.authService.Validate_Token(cookie)
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"authorized": false})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{
-		"authorized": true,
-		"userID":     token,
-	})
-}
-
-func (ush *UserHandler) RegisterHandler(c *gin.Context) {
-	c.Header("Content-Type", "application/json")
-
-	var user models.User
-	err := c.ShouldBindJSON(&user)
-	if err != nil {
-		status_code := http.StatusBadRequest
-		ResponseRegistration(status_code, c)
-		return
-	}
-	cfToken := user.Turnstile_token
-	remoteAddr := c.RemoteIP()
-
-	ok, err := ush.Turnslite.Verify(c.Request.Context(), cfToken, remoteAddr)
-	if err != nil || !ok {
-		status_code := http.StatusForbidden
-		ResponseRegistration(status_code, c)
-		return
-	}
-	ctx := c.Request.Context()
-	status_code, id := ush.authService.Register(ctx, user)
-	if status_code == 200 {
-		ush.authService.SetTokenInCookie(c, id)
-		ResponseRegistration(status_code, c)
-		return
-	} else {
-		ResponseRegistration(status_code, c)
-	}
-}
-
-func (ush *UserHandler) LoginHandler(c *gin.Context) {
-	c.Header("Content-Type", "application/json")
-
-	var user models.User
-	err := c.ShouldBindJSON(&user)
-	if err != nil {
-		status_code := http.StatusBadRequest
-		ResponseRegistration(status_code, c)
-		return
-	}
-	cfToken := user.Turnstile_token
-	remoteAddr := c.RemoteIP()
-
-	ok, err := ush.Turnslite.Verify(c.Request.Context(), cfToken, remoteAddr)
-	if err != nil || !ok {
-		status_code := http.StatusForbidden
-		ResponseLogin(status_code, c)
-		return
-	}
-	ctx := c.Request.Context()
-	status_code, id := ush.authService.Login(ctx, user)
-	if status_code == 200 {
-		ush.authService.SetTokenInCookie(c, id)
-		ResponseLogin(status_code, c)
-		return
-	} else {
-		ResponseLogin(status_code, c)
-		return
-	}
-
-}
-
 func (ush *UserHandler) ProfileHandler(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
 
-	userID, ok := c.Request.Context().Value(contextutil.UserIDKey).(int)
-	if !ok {
-		c.AbortWithStatus(http.StatusUnauthorized)
-		return
+	id, err := strconv.Atoi(c.Param("Id"))
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"Message": "Invalid body"})
 	}
+
 	ctx := c.Request.Context()
-	user, status_code := ush.authService.FetchUser(ctx, userID)
+	user, status_code := ush.authService.FetchUser(ctx, id)
 	if status_code != http.StatusOK {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"Message": "Cannot fetch user data"})
 		return
@@ -193,6 +112,30 @@ func (ush *UserHandler) ChangePasswordHandler(c *gin.Context) {
 	ResponsePasswordChange(status_code, c)
 }
 
+func (ush *UserHandler) ChangeAvatarHandler(c *gin.Context) {
+	c.Header("Content-Type", "application/json")
+
+	cookie, exist := c.Cookie("jwt-token")
+	if exist != nil {
+		c.AbortWithError(http.StatusUnauthorized, exist)
+		return
+	}
+	claims, ok := ush.authService.Validate_Token(cookie)
+	if ok != nil {
+		c.AbortWithError(http.StatusUnauthorized, ok)
+		return
+	}
+
+	var avatar_id models.User
+	err := c.ShouldBind(&avatar_id)
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+	}
+
+	status_code := ush.authService.ChangeAvatar(c, avatar_id, claims)
+	ResponseAvatarChange(status_code, c)
+}
+
 func (ush *UserHandler) GetArticleAuthorHandler(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
 
@@ -220,21 +163,8 @@ func (ush *UserHandler) GetArticleAuthorHandler(c *gin.Context) {
 	}
 }
 
-func (ush *UserHandler) LogoutHandler(c *gin.Context) {
-	c.SetCookie("jwt-token", "", 0, "/", "", true, true)
-}
+func (ush *UserHandler) FetchUserProfile(c *gin.Context) {
+	c.Header("Content-Type", "application/json")
 
-func (ush *UserHandler) DeleteAccountHandler(c *gin.Context) {
-	cookie, exist := c.Cookie("jwt-token")
-	if exist != nil {
-		c.AbortWithError(http.StatusUnauthorized, exist)
-		return
-	}
-	claims, ok := ush.authService.Validate_Token(cookie)
-	if ok != nil {
-		c.AbortWithError(http.StatusUnauthorized, ok)
-		return
-	}
-	status_code := ush.authService.DeleteAccount(c.Request.Context(), claims)
-	ResponseAccountDelete(status_code, c)
+
 }
