@@ -69,7 +69,7 @@ async function FetchArticleComments() {
     headers: { "Accept": "application/json" }
   })
   if (comments_request.ok) {
-    const comments = JSON.parse(await comments_request.json())
+    const comments = await comments_request.json()
     const comments_element = document.getElementById("comments")
     comments.forEach((comment) => {
       const comment_element = document.createElement("div");
