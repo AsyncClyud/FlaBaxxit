@@ -6,7 +6,7 @@ async function Fetch_Articles() {
     headers: { Accept: "application/json" },
   });
   if (response.ok) {
-    const data = JSON.parse(await response.json());
+    const data = await response.json();
     const articles_element = document.getElementById("articles");
     data.forEach((article) => {
       const article_element = document.createElement("div")
