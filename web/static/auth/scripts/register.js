@@ -18,7 +18,7 @@ async function SendRegisterRequest() {
     const message = await response.json()
     document.getElementById("status").textContent = message.Message
     await new Promise(r => setTimeout(r, 2000));
-    window.location.replace("/profile")
+    window.location.replace("/")
     }
   else {
     const message = await response.json()
