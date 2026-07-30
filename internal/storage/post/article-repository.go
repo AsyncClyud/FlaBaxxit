@@ -8,17 +8,33 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/redis/go-redis/v9"
 )
 
 type PostRepository struct {
 	db *pgxpool.Pool
+	rdb *redis.Client
 }
 
-func NewPostRepo(db *pgxpool.Pool) *PostRepository {
-	return &PostRepository{db: db}
+func NewPostRepo(db *pgxpool.Pool, rdb *redis.Client) *PostRepository {
+	return &PostRepository{db: db, rdb: rdb}
 }
 
-func (pr *PostRepository) GetAllArticles(ctx context.Context) (all_articles string) {
+func (pr *PostRepository) GetAllArticles(ctx context.Context) (all_articles []models.ArticleWithAuthor) {
+	articlesCacheKey := "articles:list"
+
+	val, err := pr.rdb.Get(ctx, articlesCacheKey).Result()
+	if err == nil {
+		var articles []models.ArticleWithAuthor
+		err := json.Unmarshal([]byte(val), &articles)
+		if err != nil {
+			log.Println(err)
+		}
+
+		return articles
+
+	}
+
 	query := `SELECT
         p.id, p.title,
         u.id, u.username, u.profile_pic
@@ -41,13 +57,13 @@ func (pr *PostRepository) GetAllArticles(ctx context.Context) (all_articles stri
 		}
 		articles = append(articles, article)
 	}
-
-	result, err := json.MarshalIndent(articles, "", " ")
+	data, err := json.Marshal(articles)
 	if err != nil {
-		log.Println(err)
+		log.Printf("Json marshal error: %v", err)
 	}
+	pr.rdb.Set(ctx, articlesCacheKey, data, 5*time.Minute)
 
-	return string(result)
+	return articles
 }
 
 func (pr *PostRepository) GetArticleById(ctx context.Context, Id int) (byid_article string) {

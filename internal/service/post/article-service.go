@@ -26,7 +26,8 @@ func (pr PostService) ValidateArticle(article models.Article) (status_code int) 
 	return http.StatusOK
 }
 
-func (pr PostService) GetArticles(ctx context.Context) (articles string) {
+func (pr PostService) GetArticles(ctx context.Context) (articles []models.ArticleWithAuthor) {
+
 	return pr.repo.GetAllArticles(ctx)
 }
 
