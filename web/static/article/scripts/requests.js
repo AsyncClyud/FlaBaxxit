@@ -17,11 +17,15 @@ async function FetchArticle() {
     const article_element = document.getElementById("article");
     article_element.setAttribute("class", "w-[90vw] h-fit bg-[#212121] rounded-[5px]");
     article_element.innerHTML = `
+    <div class="flex flex-col text-left m-[5px]">
+      <img class="rounded-full" src="/static/images/${article.Author_Avatar}.webp" alt="Profile Picture" width="85px", height="85px">
+      <a class="h-fit w-fit ml-[5px] text-[20px]" href="/profile/${article.Author_Id}">${article.Author_Username}</a>
+    </div>
     <h3 class="text-[4vh] m-[10px]" id="title">${article.Title}</h3>
     <p class="text-[2vh] m-[5px] px-8" id="content">${article.Content}</p>
-    <p class="text-[gray] m-[20px]" id="created_at">${article.Created_at}</p>
+    <p class="text-[gray] text-[14px] m-[20px]" id="created_at">${article.Created_at}</p>
     <p class="m-[5px]" >Article Author ID:</p>
-    <p class="m-[20px]" id="author_id">${article.Author}</p>
+    <p class="m-[20px]" id="author_id">${article.Author_Id}</p>
     <h3 class="h-[min-content] w-[65vw] bg-[#333c46] text-[2vh] rounded-[10px] m-[3px] ml-auto mr-auto outline-[3px] outline-solid outline-[#151b23]">Comments</h3>
     <div class="h-[min-content] w-[60vw] bg-[#2a323c] rounded-[5px] m-[10px] ml-auto mr-auto p-4" id="comments"></div>
     `;

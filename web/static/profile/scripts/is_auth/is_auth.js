@@ -1,3 +1,5 @@
+"use strict";
+
 export async function IsAuth() {
   const response = await fetch("/api/auth", {
     method: "GET",

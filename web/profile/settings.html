@@ -33,8 +33,10 @@
         </div>
     </header>
     <main class="w-[70vw] grid grid-rows-[auto_auto_auto_auto] text-[#d1d7e0] text-center font-[JetBrains_Mono] m-[5px] mr-auto ml-auto content-center justify-center justify-items-center" id="main">
-        <div class="h-fit w-[65vw] bg-[#212121] m-[5px] rounded-[10px]" id="actions">
-            <h2 class="h-[min-content] w-[65vw] bg-[#333c46] text-[4vh] rounded-[10px] ml-auto mr-auto outline-[3px] outline-solid outline-[#151b23]">Account info</h2>
+        <div class="h-fit w-[75vw] bg-[#212121] m-[5px] rounded-[10px]" id="actions">
+            <h2 class="h-[min-content] w-[75vw] bg-[#333c46] text-[4vh] rounded-[10px] ml-auto mr-auto outline-[3px] outline-solid outline-[#151b23]">Account info</h2>
+            <h3 class="text-[3vh] m-[10px]">Change avatar</h3>
+            <button class="w-fit bg-[white] text-[black] text-[JetBrains_Mono] rounded-[5px] m-[10px] p-[5px]" type="button" onclick="ShowChangeAvatarMenu()">Change avatar</button>
             <h3 class="text-[3vh] m-[10px]">Change Username</h3>
             <p id="username"></p>
             <input class="w-[45vw] bg-[white] text-[black] rounded-[2px]" type="text" placeholder="Type a new username..." id="input_username">
@@ -54,14 +56,14 @@
             <h3 class="text-[3vh] m-[10px]">Delete account</h3>
             <p id="message_delete"></p>
             <button class="w-fit bg-[white] text-[black] text-[JetBrains_Mono] rounded-[5px] m-[10px] p-[5px]" type="button" onclick="SendDeleteAccountRequest()">Delete account</button>
-
         </div>
     </main>
+    <button type="button">Button</button>
     <footer class="h-[10vh] w-auto row-[3] bg-[#212830] text-center font-[JetBrains_Mono]" id="footer">
         <div class="mr-auto flex flex-col">
             <a class="m-[5px] text-[#6f6f76]" href="/privacy">Privacy Policy</a>
             <a class="m-[5px] text-[#6f6f76]" href="/terms">Terms of use</a>
-                        <a class="m-[5px] ml-auto mr-auto" href="https://github.com/AsyncClyud/FlaBaxxit-mobile-app/releases/download/alpha/flabaxxit-v1.0.apk"><img src="/static/images/android.svg" alt="Logo"></a>
+            <a class="m-[5px] ml-auto mr-auto" href="https://github.com/AsyncClyud/FlaBaxxit-mobile-app/releases/download/alpha/flabaxxit-v1.0.apk"><img src="/static/images/android.svg" alt="Logo"></a>
             <p class="text-[#6f6f76]">&copy; 2026 FlaBaxxit. All copyright reversed.</p>
         </div>
     </footer>

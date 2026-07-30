@@ -3,17 +3,17 @@
 import {IsAuth} from "../is_auth/is_auth.js"
 
 async function UserMenu() {
-  if (await IsAuth() == true) {
+  if (await IsAuth() != 0) {
     const header_element = document.getElementById("header")
 
     const usermenu_button = document.createElement("button")
     usermenu_button.setAttribute("id", "usermenu_button")
-    usermenu_button.setAttribute("class", "w-10 h-10 bg-[url(/static/images/4.webp)] bg-center bg-cover rounded-full")
+    usermenu_button.setAttribute("class", "w-8 h-6 bg-[url(/static/images/3lines.webp)] bg-center bg-cover m-[7px]")
     usermenu_button.setAttribute("onclick", "ShowUserMenu()")
 
     header_element.appendChild(usermenu_button)
   }
-  else {
+  if(await IsAuth() == 0){
     const header_element = document.getElementById("header")
 
     const login_element = document.createElement("a")

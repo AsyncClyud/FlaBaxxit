@@ -1,3 +1,5 @@
+"use strict";
+
 export async function CommentCreator() {
   const response = await fetch("/api/auth", {
     method: "GET",

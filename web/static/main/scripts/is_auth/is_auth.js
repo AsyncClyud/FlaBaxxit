@@ -1,3 +1,5 @@
+"use strict";
+
 export async function IsAuth() {
   const response = await fetch("/api/auth", {
     method: "GET",
@@ -5,12 +7,11 @@ export async function IsAuth() {
   })
   if (response.ok) {
     const data = await response.json()
-    if (data.authorized == true) {
-      return true
-    }
-    else {
-      return false
-    }
+    return data.userID
+  }
+  else {
+    const data = await response.json()
+    return data.userID
   }
 }
 
