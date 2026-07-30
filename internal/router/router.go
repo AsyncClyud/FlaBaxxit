@@ -15,7 +15,7 @@ import (
 func Router(postDB poststorage.PostRepository, userDB userstorage.UserRepository, postHandler posthandler.PostHandler, userHandler userhandler.UserHandler, authUser userservice.AuthService, middleware middleware.Middleware) *gin.Engine {
 	r := gin.New()
 	r.SetTrustedProxies(nil)
-	r.Use(gzip.Gzip(gzip.BestSpeed, gzip.WithMinLength(256)))
+	r.Use(gzip.Gzip(gzip.BestCompression))
 	r.NoRoute(func(c *gin.Context) {
 		c.File("./web/not_found.html")
 	})
@@ -31,11 +31,12 @@ func Router(postDB poststorage.PostRepository, userDB userstorage.UserRepository
 	r.GET("/auth/login", middleware.SecureHeaders(), postHandler.ServePage("./web/auth/login.html"))
 	r.POST("/auth/login", middleware.SecureHeaders(), userHandler.LoginHandler)
 
-	r.GET("/api/profile", middleware.RequireAuth(), userHandler.ProfileHandler)
+	r.GET("/api/profile/:Id", middleware.RequireAuth(), userHandler.ProfileHandler)
 	r.PUT("/api/profile/username", middleware.RequireAuth(), userHandler.ChangeUsernameHandler)
 	r.PUT("/api/profile/password", middleware.RequireAuth(), userHandler.ChangePasswordHandler)
 	r.PUT("/api/profile/bio", middleware.RequireAuth(), userHandler.ChangeBioHandler)
-	r.GET("/profile", middleware.RequireAuth(), postHandler.ServePage("./web/profile/main_profile.html"))
+	r.PUT("/api/profile/avatar", middleware.RequireAuth(), userHandler.ChangeAvatarHandler)
+	r.GET("/profile/:Id", middleware.RequireAuth(), postHandler.ServePage("./web/profile/main_profile.html"))
 	r.GET("/profile/settings", middleware.RequireAuth(), postHandler.ServePage("./web/profile/settings.html"))
 	r.POST("/api/logout", middleware.RequireAuth(), userHandler.LogoutHandler)
 	r.DELETE("/api/users", middleware.RequireAuth(), userHandler.DeleteAccountHandler)
