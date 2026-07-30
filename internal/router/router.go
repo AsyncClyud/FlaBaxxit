@@ -36,7 +36,7 @@ func Router(postDB poststorage.PostRepository, userDB userstorage.UserRepository
 	r.PUT("/api/profile/password", middleware.RequireAuth(), userHandler.ChangePasswordHandler)
 	r.PUT("/api/profile/bio", middleware.RequireAuth(), userHandler.ChangeBioHandler)
 	r.PUT("/api/profile/avatar", middleware.RequireAuth(), userHandler.ChangeAvatarHandler)
-	r.GET("/profile/:Id", middleware.RequireAuth(), postHandler.ServePage("./web/profile/main_profile.html"))
+	r.GET("/profile/:Id", middleware.SecureHeaders(), postHandler.ServePage("./web/profile/main_profile.html"))
 	r.GET("/profile/settings", middleware.RequireAuth(), postHandler.ServePage("./web/profile/settings.html"))
 	r.POST("/api/logout", middleware.RequireAuth(), userHandler.LogoutHandler)
 	r.DELETE("/api/users", middleware.RequireAuth(), userHandler.DeleteAccountHandler)
