@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
-	_ "github.com/lib/pq"
 )
 
 type PostRepository struct {
@@ -20,18 +19,23 @@ func NewPostRepo(db *pgxpool.Pool) *PostRepository {
 }
 
 func (pr *PostRepository) GetAllArticles(ctx context.Context) (all_articles string) {
-	articles := []models.Article{}
+	query := `SELECT
+        p.id, p.title,
+        u.id, u.username, u.profile_pic
+    FROM posts p
+    JOIN users u ON u.id = p.author`
 
-	rows, err := pr.db.Query(ctx, "SELECT Id, Title FROM posts")
+	rows, err := pr.db.Query(ctx, query)
 	if err != nil {
 		log.Println("Rows error:", err)
 		rows.Err()
 	}
 	defer rows.Close()
 
+	articles := []models.ArticleWithAuthor{}
 	for rows.Next() {
-		article := models.Article{}
-		err := rows.Scan(&article.Id, &article.Title)
+		article := models.ArticleWithAuthor{}
+		err := rows.Scan(&article.Id, &article.Title, &article.Author_Id, &article.Author_Username, &article.Author_Avatar)
 		if err != nil {
 			log.Println(err)
 		}
@@ -47,17 +51,23 @@ func (pr *PostRepository) GetAllArticles(ctx context.Context) (all_articles stri
 }
 
 func (pr *PostRepository) GetArticleById(ctx context.Context, Id int) (byid_article string) {
-	var article models.Article
+	query := `SELECT
+        p.title, p.content, p.created_at::text,
+        u.id, u.username, u.profile_pic
+    FROM posts p
+    JOIN users u ON u.id = p.author
+    WHERE p.id = $1`
 
-	rows, err := pr.db.Query(ctx, "SELECT Title, Content, Created_At::text, Author FROM posts WHERE Id = $1", Id)
+	rows, err := pr.db.Query(ctx, query, Id)
 	if err != nil {
 		log.Println("Rows error:", err)
 		rows.Err()
 	}
 	defer rows.Close()
 
+	var article models.ArticleWithAuthor
 	for rows.Next() {
-		err := rows.Scan(&article.Title, &article.Content, &article.Created_at, &article.Author)
+		err := rows.Scan(&article.Title, &article.Content, &article.Created_at, &article.Author_Id, &article.Author_Username, &article.Author_Avatar)
 		if err != nil {
 			log.Println(err)
 		}
@@ -94,40 +104,4 @@ func (pr *PostRepository) DeleteArticle(ctx context.Context, article models.Arti
 		log.Println("Delete article query error:", err)
 	}
 	log.Printf("Deleted article with id: %v", article.Id)
-}
-
-func (pr *PostRepository) GetArticleCommentsById(ctx context.Context, id int) (comment string) {
-	var comments []models.Comment
-
-	rows, err := pr.db.Query(ctx, "SELECT Comment_content, Created_at::text, Author FROM Comments WHERE Post_id = $1", id)
-	if err != nil {
-		log.Println("Rows error:", err)
-		rows.Err()
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		var comment models.Comment
-		err := rows.Scan(&comment.Comment_content, &comment.Created_at, &comment.Author)
-		if err != nil {
-			log.Println(err)
-		}
-		comments = append(comments, comment)
-	}
-	result, err := json.MarshalIndent(comments, "", " ")
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	return string(result)
-
-}
-
-func (pr *PostRepository) InsertComment(ctx context.Context, comment models.Comment, author int) {
-	_, err := pr.db.Exec(
-		ctx, "INSERT INTO Comments(Comment_content, Created_at, Post_id, Author) VALUES($1, $2, $3, $4)", comment.Comment_content, time.Now(), comment.Post_id, author)
-	if err != nil {
-		log.Println("Insert comment query error:", err)
-	}
-	log.Printf("Inserted comment in post with id: %v", comment.Post_id)
 }

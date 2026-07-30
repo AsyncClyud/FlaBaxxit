@@ -5,7 +5,6 @@ import (
 	"log"
 
 	"github.com/jackc/pgx/v5/pgxpool"
-	_ "github.com/lib/pq"
 )
 
 func ConnectDataBase(ctx context.Context, connStr string) *pgxpool.Pool {
