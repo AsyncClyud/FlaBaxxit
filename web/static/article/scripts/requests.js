@@ -69,8 +69,8 @@ async function FetchArticleComments() {
     headers: { "Accept": "application/json" }
   })
   if (comments_request.ok) {
-    const comments = await comments_request.json()
-    const comments_element = document.getElementById("comments")
+    const comments = JSON.parse(await comments_request.json());
+    const comments_element = document.getElementById("comments");
     comments.forEach((comment) => {
       const comment_element = document.createElement("div");
       comment_element.innerHTML = `
@@ -79,7 +79,7 @@ async function FetchArticleComments() {
         <p class="text-[gray] m-[20px]">${comment.Created_at}</p>
         <hr>
         `
-        comments_element.appendChild(comment_element)
+      comments_element.appendChild(comment_element);
     });
   }
 }
