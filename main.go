@@ -39,9 +39,6 @@ func main() {
 
 	router := router.Router(*postDB, *userDB, *postHandler, *userHandler, *authService, *middleware)
 
-	log.Println("Server is started...")
-	log.Printf("Go to http://localhost:%v", cfg.Port)
-
 	err := router.Run()
 	if err != nil {
 		panic(err)
