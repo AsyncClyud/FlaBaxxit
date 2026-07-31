@@ -1,7 +1,7 @@
 package tests
 
 import (
-	"blog/internal/moderation"
+	"flabaxxit/internal/moderation"
 	"testing"
 )
 
