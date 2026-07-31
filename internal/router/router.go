@@ -23,8 +23,9 @@ func Router(postDB poststorage.PostRepository, userDB userstorage.UserRepository
 	})
 
 	r.GET("/", middleware.SecureHeaders(), postHandler.ServePage("./web/index.html"))
-	r.GET("/terms", middleware.SecureHeaders(), postHandler.ServePage("./web/terms.html"))
-	r.GET("/privacy", middleware.SecureHeaders(), postHandler.ServePage("./web/privacy.html"))
+	r.GET("/terms-of-use", middleware.SecureHeaders(), postHandler.ServePage("./web/terms.html"))
+	r.GET("/privacy-policy", middleware.SecureHeaders(), postHandler.ServePage("./web/privacy.html"))
+	r.GET("/user-agreement", middleware.SecureHeaders(), postHandler.ServePage("./web/user-agreement.html"))
 	r.GET("/not_found", middleware.SecureHeaders(), postHandler.ServePage("./web/not_found.html"))
 
 	r.GET("/api/auth", middleware.SecureHeaders(), userHandler.IsAuth)
