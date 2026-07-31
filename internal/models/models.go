@@ -34,7 +34,9 @@ type Comment struct {
 	Comment_content string  `json:"Comment_content"`
 	Created_at      *string `json:"Created_at"`
 	Post_id         int     `json:"Post_id"`
-	Author          int     `json:"Author"`
+	Author_Id          int     `json:"Author_Id"`
+	Author_Username string  `json:"Author_Username"`
+	Author_Avatar   int     `json:"Author_Avatar"`
 	Turnstile_token string  `json:"Turnstile_token"`
 }
 
