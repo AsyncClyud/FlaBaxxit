@@ -1,8 +1,8 @@
 package userstorage
 
 import (
-	"blog/internal/models"
 	"context"
+	"flabaxxit/internal/models"
 	"log"
 
 	"github.com/jackc/pgx/v5/pgxpool"

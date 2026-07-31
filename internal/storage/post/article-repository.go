@@ -1,9 +1,9 @@
 package poststorage
 
 import (
-	"blog/internal/models"
 	"context"
 	"encoding/json"
+	"flabaxxit/internal/models"
 	"log"
 	"strconv"
 	"time"
@@ -33,7 +33,6 @@ func (pr *PostRepository) GetAllArticles(ctx context.Context) (all_articles []mo
 		}
 		return articles
 	}
-
 	query := `SELECT
         p.id, p.title,
         u.id, u.username, u.profile_pic
@@ -60,7 +59,7 @@ func (pr *PostRepository) GetAllArticles(ctx context.Context) (all_articles []mo
 	if err != nil {
 		log.Printf("Json marshal error: %v\n", err)
 	}
-	pr.rdb.Set(ctx, articlesCacheKey, data, 10*time.Minute)
+	pr.rdb.Set(ctx, articlesCacheKey, data, 15*time.Minute)
 
 	return articles
 }
@@ -103,33 +102,39 @@ func (pr *PostRepository) GetArticleById(ctx context.Context, Id int) (articles 
 	if err != nil {
 		log.Printf("Json Marshal error: %v\n", err)
 	}
-	pr.rdb.Set(ctx, articleCacheKey, data, 10*time.Minute)
+	pr.rdb.Set(ctx, articleCacheKey, data, 15*time.Minute)
 
 	return article
 }
 
 func (pr *PostRepository) InsertArticle(ctx context.Context, article models.Article, author int) {
+	articlesCacheKey := "articles:list"
 	_, err := pr.db.Exec(
 		ctx, "INSERT INTO Posts(Title, Content, Created_at, Author) VALUES ($1, $2, $3, $4)", article.Title, article.Content, time.Now(), author)
 	if err != nil {
 		log.Println("Insert article query error:", err)
 	}
 	log.Printf("Inserted new article with title %v; Article author: %v", article.Title, author)
+	pr.rdb.Del(ctx, articlesCacheKey)
 }
 
 func (pr *PostRepository) UpdateArticle(ctx context.Context, article models.Article) {
+	articleCacheKey := strconv.Itoa(article.Id)
 	_, err := pr.db.Exec(
 		ctx, "UPDATE Posts SET Title = $1, Content = $2 WHERE Id = $3", article.Title, article.Content, article.Id)
 	if err != nil {
 		log.Println("Update article query error:", err)
 	}
+	pr.rdb.Del(ctx, articleCacheKey)
 	log.Printf("Updated article with title: %v", article.Title)
 }
 
 func (pr *PostRepository) DeleteArticle(ctx context.Context, article models.Article) {
+	articlesCacheKey := "articles:list"
 	_, err := pr.db.Exec(ctx, "DELETE FROM Posts WHERE Id = $1", article.Id)
 	if err != nil {
 		log.Println("Delete article query error:", err)
 	}
 	log.Printf("Deleted article with id: %v", article.Id)
+	pr.rdb.Del(ctx, articlesCacheKey)
 }
