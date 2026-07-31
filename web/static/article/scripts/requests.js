@@ -69,12 +69,15 @@ async function FetchArticleComments() {
     headers: { "Accept": "application/json" }
   })
   if (comments_request.ok) {
-    const comments = JSON.parse(await comments_request.json());
+    const comments = await comments_request.json();
     const comments_element = document.getElementById("comments");
     comments.forEach((comment) => {
       const comment_element = document.createElement("div");
       comment_element.innerHTML = `
-        <h3>Author Id: ${comment.Author}</h3>
+        <div class="flex flex-col text-left m-[5px]">
+          <img class="rounded-full" src="/static/images/${comment.Author_Avatar}.webp" alt="Profile Picture" width="85px", height="85px">
+          <a class="h-fit w-fit ml-[5px] text-[20px]" href="/profile/${comment.Author_Id}">${comment.Author_Username}</a>
+        </div>
         <p class="m-[5px]">${comment.Comment_content}</p>
         <p class="text-[gray] m-[20px]">${comment.Created_at}</p>
         <hr>
