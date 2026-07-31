@@ -1,6 +1,12 @@
 "use strict";
 
 async function SendRegisterRequest() {
+  const is_agree = document.getElementById("agree_button").value
+  if (is_agree != "agree") {
+    document.getElementById("status").textContent = "You need to agree with Privacy Policy and User Agreement!"
+    return
+  }
+
   const username = document.getElementById("username").value
   const password = document.getElementById("password").value
   const turnstile_token = turnstile.getResponse()
@@ -25,4 +31,16 @@ async function SendRegisterRequest() {
     document.getElementById("status").textContent = message.Message
     turnstile.reset()
   }
+}
+
+function SetAgreeValue() {
+  const agree_button = document.getElementById("agree_button")
+  agree_button.setAttribute("value", "agree")
+  agree_button.setAttribute("onclick", "UnsetAgreeValue()")
+}
+
+function UnsetAgreeValue() {
+  const agree_button = document.getElementById("agree_button")
+  agree_button.setAttribute("value", "not agree")
+  agree_button.setAttribute("onclick", "SetAgreeValue()")
 }

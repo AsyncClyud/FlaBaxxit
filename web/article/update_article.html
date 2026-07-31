@@ -32,13 +32,13 @@
             <img src="/static/images/1.webp" alt="Logo" width="50">
         </div>
     </header>
-    <main class="w-[70vw] grid grid-rows-[auto_auto_auto_auto] text-[#d1d7e0] text-center font-[JetBrains_Mono] m-[10px] mr-auto ml-auto content-center justify-center justify-items-center" id="main">
+    <main class="w-[70vw] grid grid-rows-[auto_auto_auto_auto] text-[#d1d7e0] text-center font-[JetBrains_Mono] m-[10px] mr-auto ml-auto p-6 content-center justify-center justify-items-center" id="main">
         <div class="h-fit w-[85vw] bg-[#212121] rows-[1] rounded-[5px]" id="editor">
             <h3 class="text-[3vh] m-[10px]">New Title</h3>
             <p class="text-[2vh] m-[5px]" id="title"></p>
-            <input class="w-[45vw] bg-[white] text-[black] m-[5px] rounded-[2px]" type="text" placeholder="Type a new article title..." id="new_title"> <br>
+            <input class="w-[45vw] bg-[white] text-[black] m-[5px] rounded-[2px]" type="text" placeholder="Type a new title of your thoughts" id="new_title"> <br>
             <h3 class="text-[3vh] m-[10px]">Content</h3>
-            <textarea class="w-[50vw] bg-[white] text-[black] m-[5px] resize-none rounded-[5px]" id="new_content" rows="15" cols="50" placeholder="Type a new article content..."></textarea> <br>
+            <textarea class="w-[50vw] bg-[white] text-[black] m-[5px] resize-none rounded-[5px]" id="new_content" rows="15" cols="50" placeholder="What's on your mind?"></textarea> <br>
             <button class="w-fit bg-[white] text-[black] text-[JetBrains_Mono] rounded-[3px] m-[10px] p-[5px]" type="button" onclick="SendUpdateArticleRequest()">Update</button>
             <p id="author">Article Author ID:</p>
             <p id="author_id"></p>
@@ -48,9 +48,10 @@
     </main>
     <footer class="h-[10vh] w-auto row-[3] bg-[#212830] text-center font-[JetBrains_Mono]" id="footer">
         <div class="mr-auto flex flex-col">
-            <a class="m-[5px] text-[#6f6f76]" href="/privacy">Privacy Policy</a>
-            <a class="m-[5px] text-[#6f6f76]" href="/terms">Terms of use</a>
-                        <a class="m-[5px] ml-auto mr-auto" href="https://github.com/AsyncClyud/FlaBaxxit-mobile-app/releases/download/alpha/flabaxxit-v1.0.apk"><img src="/static/images/android.svg" alt="Logo"></a>
+            <a class="m-[5px] text-[#6f6f76]" href="/privacy-policy">Privacy Policy</a>
+            <a class="m-[5px] text-[#6f6f76]" href="/terms-of-use">Terms of use</a>
+            <a class="m-[5px] text-[#6f6f76]" href="/user-agreement">User agreement</a>
+            <a class="m-[5px] ml-auto mr-auto" href="https://github.com/AsyncClyud/FlaBaxxit-mobile-app/releases/download/alpha/flabaxxit-v1.0.apk"><img src="/static/images/android.svg" alt="Logo"></a>
             <p class="text-[#6f6f76]">&copy; 2026 FlaBaxxit. All copyright reversed.</p>
         </div>
     </footer>

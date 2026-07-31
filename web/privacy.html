@@ -33,58 +33,76 @@
     </header>
         <main class="w-[70vw] grid grid-rows-[auto auto auto auto] text-[#d1d7e0] text-center font-[JetBrains_Mono] mr-auto ml-auto content-center justify-center justify-items-center" id="main">
             <div class="w-[90vw] h-fit bg-[#212121] m-[2vw] p-[5vw] rounded-[5px]" id="policy">
-                <h2>Политика конфиденциальности </h2>
-                Дата вступления в силу: 13.07.2026
-                <h3>1. Общие положения</h3>
-                Настоящая Политика конфиденциальности (далее — «Политика») определяет порядок обработки и защиты информации о пользователях (далее — «Пользователь») сервиса FlaBaxxit (далее — «Платформа»). Используя Платформу, Пользователь подтверждает согласие с условиями настоящей Политики. <br>
-                Данный документ носит общий характер и не привязан к законодательству конкретной страны.
-                <h3>2. Какие данные собираются</h3>
-                При регистрации и использовании Платформы обрабатываются следующие данные:
-                <li><strong>Имя пользователя (Username)</strong> — публично отображается на Платформе.
-                <li><strong>Пароль</strong> — хранится в базе данных исключительно в хэшированном виде; Платформа не имеет доступа к паролю в открытом виде и не может его восстановить.
-                <li><strong>Биография (Bio)</strong> — заполняется по желанию Пользователя, является публичной информацией.
-                <li><strong>Дата создания аккаунта</strong> — фиксируется автоматически при регистрации.
-                <li><strong>Публикуемый контент (статьи) </strong>— текст статей, который Пользователь размещает на Платформе, а также указание авторства </li> <br>
-                Платформа ведёт технические логи следующих событий: запросов на создание, изменение и удаление данных (например, статей), а также регистрации новых аккаунтов и авторизации в существующие аккаунты. Эти логи используются исключительно в целях отладки и выявления ошибок в работе Платформы, не используются для профилирования Пользователей и не передаются третьим лицам.
-                <h3>3. Цели обработки данных</h3>
-                Собираемые данные используются исключительно для: <br>
-                <li><strong>регистрации и аутентификации Пользователя;
-                <li>отображения профиля и публикаций Пользователя другим посетителям Платформы;
-                <li>обеспечения работы функций Платформы (публикация, редактирование и удаление статей).
+                <h2>Privacy Policy</h2>
+                Effective Date: 13.07.2026 <br>
+                Last Updated: 01.08.2026
+
+                <h3>1. General Provisions</h3>
+                This Privacy Policy (hereinafter — the "Policy") defines the procedures for processing and protecting information about users (hereinafter — the "User") of the FlaBaxxit service (hereinafter — the "Platform"). By using the
+                Platform, the User confirms their agreement with the terms of this Policy and the <a href="#user-agreement">User Agreement</a>. <br>
+                <h3>2. Data Collected</h3>
+                The following data is processed during registration and use of the Platform:
+                <li><strong>Username</strong> — publicly displayed on the Platform.
+                <li><strong>Password</strong> — stored in the database exclusively in hashed form using industry-standard algorithms (e.g., bcrypt with a cost factor of 10); the Platform does not have access to the password in plaintext and
+                cannot recover it.
+                <li><strong>Biography (Bio)</strong> — filled in at the User's discretion and is public information.
+                <li><strong>Account creation date</strong> — automatically recorded upon registration.
+                <li><strong>Published content (articles)</strong> — the text of articles posted by the User on the Platform, as well as authorship information.</li> <br>
+                The Platform maintains technical logs of the following events: requests for creation, modification, and deletion of data (e.g., articles), as well as registration of new accounts and authentication into existing accounts. These
+                logs are retained for 7 days for debugging purposes and are automatically deleted thereafter. Logs are not used for user profiling and are not shared with third parties.
+                <br><br>
+                <strong>Third-Party Services:</strong> We use third-party services for hosting and analytics. These providers may have access to your data but are contractually obligated to protect it in accordance with this Policy.
+                <h3>3. Purposes of Data Processing</h3>
+                The collected data is used exclusively for: <br>
+                <li><strong>User registration and authentication;
+                <li>Displaying the User's profile and publications to other visitors of the Platform;
+                <li>Ensuring the functionality of the Platform (publishing, editing, and deleting articles).
                 </li></strong> <br>
-                Данные не используются для рекламы, аналитики или иных целей, не указанных в настоящей Политике.
-                <h3>4. Правовое основание обработки</h3>
-                Обработка данных осуществляется на основании согласия Пользователя, выраженного при регистрации на Платформе (принятие настоящей Политики и Пользовательского соглашения).
-                <h3>5. Аутентификация и токены (JWT)</h3>
-                Для аутентификации Платформа использует JWT-токен, который передаётся в cookie. Токен содержит только идентификатор пользователя (userID) и не содержит пароль, email или иные персональные данные. <br> Срок действия токена ограничен; по истечении срока Пользователю потребуется повторная авторизация.
-                <h3>6. Хранение и защита данных</h3>
-                <li><strong>Пароли хранятся в базе данных в хэшированном (необратимо преобразованном) виде.
-                <li>Доступ к базе данных ограничен и не предоставляется третьим лицам.
-                <li>Платформа принимает разумные технические меры для защиты данных от несанкционированного доступа, однако не может гарантировать абсолютную защиту от всех возможных угроз.
+                Data is not used for advertising, analytics, or any other purposes not specified in this Policy.
+                <h3>4. Legal Basis for Processing</h3>
+                Data processing is carried out based on the User's consent, expressed during registration on the Platform (acceptance of this Policy and the User Agreement). For users in the European Union, processing is also based on
+                legitimate interests and contractual necessity.
+                <h3>5. Authentication and Tokens (JWT)</h3>
+                For authentication, the Platform uses JWT tokens, which are transmitted via cookies. The token contains only the user identifier (userID) and expires after 24 hours. Refresh tokens are used to obtain new access tokens securely.
+                Tokens are invalidated upon logout.
+                <h3>6. Data Storage and Protection</h3>
+                <li><strong>Passwords are stored in the database using industry-standard hashing algorithms (e.g., bcrypt).
+                <li>All data is encrypted in transit using TLS 1.2+ and at rest using AES-256 encryption.
+                <li>Access to the database is restricted and not provided to third parties.
+                <li>The Platform takes reasonable technical measures to protect data from unauthorized access but cannot guarantee absolute protection against all possible threats.
                 </strong></li>
-                <h3>7. Передача данных третьим лицам</h3>
-                Платформа не передаёт данные Пользователя третьим лицам, за исключением случаев, прямо предусмотренных законом.
-                <h3>8. Права Пользователя</h3>
-                <h4>Пользователь имеет право:</h4>
-                <li>получить информацию о том, какие данные о нём хранятся;
-                <li>изменить или удалить биографию и иные редактируемые данные профиля;
-                <li>удалить свой аккаунт, что влечёт удаление данных профиля из базы данных (за исключением случаев, когда сохранение требуется по закону). <br>
-                </li>
-                <strong>Для реализации этих прав Пользователь может обратиться по контактам, указанным в разделе 11.</strong>
-                <h3>9. Срок хранения данных</h3>
-                Данные Пользователя хранятся до момента удаления аккаунта Пользователем либо администрацией Платформы в случаях, предусмотренных Правилами платформы.
-                <h3>10. Изменения Политики</h3>
-                Платформа вправе вносить изменения в настоящую Политику. Актуальная версия всегда доступна на Платформе. Существенные изменения будут доведены до сведения Пользователей.
-                <h3>11. Контакты</h3>
-                По всем вопросам, связанным с обработкой данных, Пользователь может обратиться:
-                <a href="mailto:cleanblog.support@atomicmail.io">cleanblog.support@atomicmail.io.</a>
+                <h3>7. Data Sharing with Third Parties</h3>
+                The Platform does not share User data with third parties, except in the following cases:
+                <li>When required by law or legal process;
+                <li>To protect the rights, property, or safety of the Platform, its users, or the public;
+                <li>With service providers under contractual obligations to protect data.
+                <h3>8. User Rights</h3>
+                <h4>The User has the right to:</h4>
+                <li>Request access to their data by emailing <a href="mailto:flabaxxit.support@atomicmail.io">flabaxxit.support@atomicmail.io</a>;
+                <li>Modify or delete their biography and other editable profile data;
+                <li>Delete their account, which entails the removal of profile data from the database (except where retention is required by law);
+                <li>Request a copy of their data in a machine-readable format (data portability).
+                <br>
+                <strong>To exercise these rights, email <a href="mailto:flabaxxit.support@atomicmail.io">flabaxxit.support@atomicmail.io</a> with the subject "Data Request." We will respond within 14 business days.</strong>
+                <h3>9. Data Retention Period</h3>
+                User data is stored until the User deletes their account or until the Platform's administration deletes it in cases provided for by the <a href="/terms">User Agreement</a>. Technical logs are retained for 90 days.
+                <h3>10. Data Breach Notification</h3>
+                In the event of a data breach, we will notify affected users within 72 hours with prominent notice on the Platform.
+                <h3>11. Age Restrictions</h3>
+                The Platform is not intended for users under the age of 16. By using the Platform, you confirm you are of legal age.
+                <h3>12. Policy Amendments</h3>
+                The Platform reserves the right to amend this Policy. The current version is always available on the Platform. Significant changes will be communicated to Users via email or a prominent notice.
+                <h3>13. Contacts</h3>
+                For all questions related to data processing, the User may contact: <br>
+                <a href="mailto:flabaxxit.support@atomicmail.io">flabaxxit.support@atomicmail.io</a>
             </div>
         </main>
         <footer class="h-[10vh] w-auto row-[3] bg-[#212830] text-center font-[JetBrains_Mono]" id="footer">
             <div class="mr-auto flex flex-col">
-                <a class="m-[5px] text-[#6f6f76]" href="/privacy">Privacy Policy</a>
-                <a class="m-[5px] text-[#6f6f76]" href="/terms">Terms of use</a>
-                            <a class="m-[5px] ml-auto mr-auto" href="https://github.com/AsyncClyud/FlaBaxxit-mobile-app/releases/download/alpha/flabaxxit-v1.0.apk"><img src="/static/images/android.svg" alt="Logo"></a>
+                <a class="m-[5px] text-[#6f6f76]" href="/privacy-policy">Privacy Policy</a>
+                <a class="m-[5px] text-[#6f6f76]" href="/terms-of-use">Terms of use</a>
+                <a class="m-[5px] text-[#6f6f76]" href="/user-agreement">User agreement</a>
+                <a class="m-[5px] ml-auto mr-auto" href="https://github.com/AsyncClyud/FlaBaxxit-mobile-app/releases/download/alpha/flabaxxit-v1.0.apk"><img src="/static/images/android.svg" alt="Logo"></a>
                 <p class="text-[#6f6f76]">&copy; 2026 FlaBaxxit. All copyright reversed.</p>
             </div>
         </footer>
