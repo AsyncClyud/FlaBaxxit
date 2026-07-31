@@ -1,17 +1,17 @@
 package main
 
 import (
-	"blog/internal/config"
-	posthandler "blog/internal/handler/post"
-	userhandler "blog/internal/handler/user"
-	"blog/internal/middleware"
-	"blog/internal/router"
-	postservice "blog/internal/service/post"
-	userservice "blog/internal/service/user"
-	"blog/internal/storage"
-	poststorage "blog/internal/storage/post"
-	userstorage "blog/internal/storage/user"
 	"context"
+	"flabaxxit/internal/config"
+	posthandler "flabaxxit/internal/handler/post"
+	userhandler "flabaxxit/internal/handler/user"
+	"flabaxxit/internal/middleware"
+	"flabaxxit/internal/router"
+	postservice "flabaxxit/internal/service/post"
+	userservice "flabaxxit/internal/service/user"
+	"flabaxxit/internal/storage"
+	poststorage "flabaxxit/internal/storage/post"
+	userstorage "flabaxxit/internal/storage/user"
 	"log"
 	"os"
 
