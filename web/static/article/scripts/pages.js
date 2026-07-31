@@ -14,7 +14,7 @@ async function FetchArticleInfo() {
     headers: { Accept: "application/json" },
   });
   if (getarticle_info.ok) {
-    const article_info = JSON.parse(await getarticle_info.json())
+    const article_info = await getarticle_info.json()
     document.getElementById("title").textContent = `${article_info.Title}`
     document.getElementById("new_content").textContent = `${article_info.Content}`
     document.getElementById("author_id").textContent = `${article_info.Author_Id}`
