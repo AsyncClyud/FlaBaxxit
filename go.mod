@@ -1,4 +1,4 @@
-module blog
+module flabaxxit
 
 go 1.25.0
 
