@@ -1,8 +1,8 @@
 package captcha
 
 import (
-	"blog/internal/config"
 	"context"
+	"flabaxxit/internal/config"
 
 	"github.com/9ssi7/turnstile"
 )
