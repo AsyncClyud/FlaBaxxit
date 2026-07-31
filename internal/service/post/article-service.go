@@ -31,7 +31,7 @@ func (pr PostService) GetArticles(ctx context.Context) (articles []models.Articl
 	return pr.repo.GetAllArticles(ctx)
 }
 
-func (pr PostService) GetArticleById(ctx context.Context, id int) (article string) {
+func (pr PostService) GetArticleById(ctx context.Context, id int) (article models.ArticleWithAuthor) {
 	return pr.repo.GetArticleById(ctx, id)
 }
 

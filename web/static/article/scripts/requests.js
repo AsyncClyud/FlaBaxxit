@@ -13,7 +13,7 @@ async function FetchArticle() {
     headers: { Accept: "application/json" },
   });
   if (get_article_request.ok) {
-    const article = JSON.parse(await get_article_request.json());
+    const article = await get_article_request.json();
     const article_element = document.getElementById("article");
     article_element.setAttribute("class", "w-[90vw] h-fit bg-[#212121] rounded-[5px]");
     article_element.innerHTML = `

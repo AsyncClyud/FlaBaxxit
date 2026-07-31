@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"log"
+	"strconv"
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -30,9 +31,7 @@ func (pr *PostRepository) GetAllArticles(ctx context.Context) (all_articles []mo
 		if err != nil {
 			log.Println(err)
 		}
-
 		return articles
-
 	}
 
 	query := `SELECT
@@ -59,14 +58,25 @@ func (pr *PostRepository) GetAllArticles(ctx context.Context) (all_articles []mo
 	}
 	data, err := json.Marshal(articles)
 	if err != nil {
-		log.Printf("Json marshal error: %v", err)
+		log.Printf("Json marshal error: %v\n", err)
 	}
-	pr.rdb.Set(ctx, articlesCacheKey, data, 5*time.Minute)
+	pr.rdb.Set(ctx, articlesCacheKey, data, 10*time.Minute)
 
 	return articles
 }
 
-func (pr *PostRepository) GetArticleById(ctx context.Context, Id int) (byid_article string) {
+func (pr *PostRepository) GetArticleById(ctx context.Context, Id int) (articles models.ArticleWithAuthor) {
+	articleCacheKey := strconv.Itoa(Id)
+
+	val, err := pr.rdb.Get(ctx, articleCacheKey).Result()
+	if err == nil {
+		var article models.ArticleWithAuthor
+		err := json.Unmarshal([]byte(val), &article)
+		if err != nil {
+			log.Println(err)
+		}
+		return article
+	}
 	query := `SELECT
         p.title, p.content, p.created_at::text,
         u.id, u.username, u.profile_pic
@@ -88,12 +98,14 @@ func (pr *PostRepository) GetArticleById(ctx context.Context, Id int) (byid_arti
 			log.Println(err)
 		}
 	}
-	result, err := json.MarshalIndent(article, "", " ")
-	if err != nil {
-		log.Println(err)
-	}
 
-	return string(result)
+	data, err := json.Marshal(article)
+	if err != nil {
+		log.Printf("Json Marshal error: %v\n", err)
+	}
+	pr.rdb.Set(ctx, articleCacheKey, data, 10*time.Minute)
+
+	return article
 }
 
 func (pr *PostRepository) InsertArticle(ctx context.Context, article models.Article, author int) {
