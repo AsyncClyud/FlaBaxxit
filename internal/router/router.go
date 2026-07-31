@@ -1,21 +1,23 @@
 package router
 
 import (
-	posthandler "blog/internal/handler/post"
-	userhandler "blog/internal/handler/user"
-	"blog/internal/middleware"
-	userservice "blog/internal/service/user"
-	poststorage "blog/internal/storage/post"
-	userstorage "blog/internal/storage/user"
+	posthandler "flabaxxit/internal/handler/post"
+	userhandler "flabaxxit/internal/handler/user"
+	"flabaxxit/internal/middleware"
+	userservice "flabaxxit/internal/service/user"
+	poststorage "flabaxxit/internal/storage/post"
+	userstorage "flabaxxit/internal/storage/user"
 
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 )
 
 func Router(postDB poststorage.PostRepository, userDB userstorage.UserRepository, postHandler posthandler.PostHandler, userHandler userhandler.UserHandler, authUser userservice.AuthService, middleware middleware.Middleware) *gin.Engine {
+	gin.SetMode(gin.ReleaseMode)
 	r := gin.New()
 	r.SetTrustedProxies(nil)
 	r.Use(gzip.Gzip(gzip.BestCompression))
+	r.Use(gin.Logger(), gin.ErrorLogger())
 	r.NoRoute(func(c *gin.Context) {
 		c.File("./web/not_found.html")
 	})
@@ -31,7 +33,7 @@ func Router(postDB poststorage.PostRepository, userDB userstorage.UserRepository
 	r.GET("/auth/login", middleware.SecureHeaders(), postHandler.ServePage("./web/auth/login.html"))
 	r.POST("/auth/login", middleware.SecureHeaders(), userHandler.LoginHandler)
 
-	r.GET("/api/profile/:Id", middleware.RequireAuth(), userHandler.ProfileHandler)
+	r.GET("/api/profile/:Id", middleware.SecureHeaders(), userHandler.ProfileHandler)
 	r.PUT("/api/profile/username", middleware.RequireAuth(), userHandler.ChangeUsernameHandler)
 	r.PUT("/api/profile/password", middleware.RequireAuth(), userHandler.ChangePasswordHandler)
 	r.PUT("/api/profile/bio", middleware.RequireAuth(), userHandler.ChangeBioHandler)
