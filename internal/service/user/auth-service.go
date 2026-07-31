@@ -65,7 +65,7 @@ func (ur *AuthService) SetTokenInCookie(c *gin.Context, id int) {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
-	c.SetCookie("jwt-token", jwt_token, 3200*20, "/", "", true, true)
+	c.SetCookie("jwt-token", jwt_token, 864000, "/", "", true, true)
 }
 
 func (ur *AuthService) ValidateUserData(user models.User) (status_code int) {
