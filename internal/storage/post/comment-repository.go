@@ -51,7 +51,7 @@ func (pr *PostRepository) GetArticleCommentsById(ctx context.Context, id int) (a
 	}
 	pr.rdb.Set(ctx, comments_id, data, 15*time.Minute)
 
-	return
+	return comments
 
 }
 
