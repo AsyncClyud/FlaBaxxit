@@ -1,7 +1,7 @@
 package posthandler
 
 import (
-	"blog/internal/models"
+	"flabaxxit/internal/models"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

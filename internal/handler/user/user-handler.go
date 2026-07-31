@@ -1,10 +1,10 @@
 package userhandler
 
 import (
-	"blog/internal/config"
-	"blog/internal/models"
-	userservice "blog/internal/service/user"
-	captcha "blog/internal/turnstile"
+	"flabaxxit/internal/config"
+	"flabaxxit/internal/models"
+	userservice "flabaxxit/internal/service/user"
+	captcha "flabaxxit/internal/turnstile"
 	"net/http"
 	"strconv"
 
