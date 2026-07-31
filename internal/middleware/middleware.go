@@ -1,9 +1,9 @@
 package middleware
 
 import (
-	"blog/internal/contextutil"
-	userservice "blog/internal/service/user"
 	"context"
+	"flabaxxit/internal/contextutil"
+	userservice "flabaxxit/internal/service/user"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
