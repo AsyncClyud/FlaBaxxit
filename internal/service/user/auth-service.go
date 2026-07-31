@@ -1,8 +1,8 @@
 package userservice
 
 import (
-	"blog/internal/models"
 	"context"
+	"flabaxxit/internal/models"
 	"fmt"
 	"net/http"
 	"strings"

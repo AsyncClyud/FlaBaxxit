@@ -1,10 +1,10 @@
 package postservice
 
 import (
-	"blog/internal/models"
-	"blog/internal/moderation"
-	poststorage "blog/internal/storage/post"
 	"context"
+	"flabaxxit/internal/models"
+	"flabaxxit/internal/moderation"
+	poststorage "flabaxxit/internal/storage/post"
 	"net/http"
 )
 

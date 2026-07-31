@@ -1,9 +1,9 @@
 package postservice
 
 import (
-	"blog/internal/models"
-	"blog/internal/moderation"
 	"context"
+	"flabaxxit/internal/models"
+	"flabaxxit/internal/moderation"
 	"net/http"
 )
 
@@ -15,7 +15,7 @@ func (pr PostService) ValidateComment(comment models.Comment) (status_code int) 
 	return http.StatusOK
 }
 
-func (pr PostService) GetArticleCommentsById(ctx context.Context, id int) (comments string) {
+func (pr PostService) GetArticleCommentsById(ctx context.Context, id int) (comments []models.Comment) {
 	return pr.repo.GetArticleCommentsById(ctx, id)
 }
 

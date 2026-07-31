@@ -1,10 +1,10 @@
 package userservice
 
 import (
-	_ "blog/internal/config"
-	"blog/internal/models"
-	userstorage "blog/internal/storage/user"
 	"context"
+	_ "flabaxxit/internal/config"
+	"flabaxxit/internal/models"
+	userstorage "flabaxxit/internal/storage/user"
 	"net/http"
 )
 

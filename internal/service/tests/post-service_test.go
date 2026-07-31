@@ -1,8 +1,8 @@
 package tests
 
 import (
-	"blog/internal/models"
-	service "blog/internal/service/post"
+	"flabaxxit/internal/models"
+	service "flabaxxit/internal/service/post"
 	"net/http"
 	"testing"
 )
