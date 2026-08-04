@@ -13,26 +13,30 @@
     <link rel="manifest" href="/static/icons/site.webmanifest" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style type="text/tailwindcss">
+    @custom-variant dark (&:where(.dark, .dark *));
     @theme {
     --color-clifford: #da373d;
     }
     </style>
     <script src="/static/main/scripts/usermenu/logout.js"></script>
     <script src="/static/main/scripts/usermenu/usermenu_show.js"></script>
+    <script src="/static/modules/theme/change_theme.js"></script>
+    <script type="module" src="/static/modules/theme/check_theme.js"></script>
     <script type="module" src="/static/main/scripts/usermenu/usermenu_create.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
-     <body class="min-h-[100vh] bg-[#212830] grid grid-rows-[auto_1fr_auto] m-[0]">
-            <header class="h-[15vh] w-auto bg-[#151b23] text-[white] font-[JetBrains_Mono] row-[1] outline-[2px] outline-solid outline-[#333c46]" id="header">
+     <body class="min-h-[100vh] bg-[#f4f4eb] dark:bg-[#212830] grid grid-rows-[auto_1fr_auto] m-[0]">
+            <header class="h-fit w-auto bg-[#f4f4eb] dark:bg-[#151b23] font-[JetBrains_Mono] row-[1] p-[5px] outline-[2px] outline-solid outline-[#bfbfbf]" id="header">
                 <div class="flex flex-row" id="header_content">
-                    <a class="text-[5vh] text-[#d1d7e0] font-[JetBrains_Mono]" href="/">FlaBaxxit</a> <br>
+                    <a class="text-[5vh] text-[black] dark:text-[#d1d7e0] font-[JetBrains_Mono]" href="/">FlaBaxxit</a> <br>
                     <img src="/static/images/1.webp" alt="Logo" width="50">
+                    <button class="text-[black] dark:text-[gainsboro] ml-auto" type="button" id="change-theme_button" onclick="setTheme()">Change theme</button>
                 </div>
             </header>
         <main class="w-[70vw] grid grid-rows-[auto auto auto auto] text-[#d1d7e0] text-center font-[JetBrains_Mono] mr-auto ml-auto content-center justify-center justify-items-center" id="main">
-            <div class="w-[90vw] h-fit bg-[#212121] m-[2vw] p-[5vw] rounded-[5px]" id="terms">
+            <div class="w-[80vw] h-fit bg-[#f4f4eb] dark:bg-[#212121] text-[black] dark:text-[gainsboro] m-[2vw] p-[5vw] outline-[2px] rounded-[5px]" id="terms">
                   <h2 id="user-agreement">User Agreement (Platform Rules)</h2>
                   Effective Date: 01.08.2026
                   <h3>1. Terms and Definitions</h3>
@@ -96,13 +100,17 @@
                   <span><a href="mailto:flabaxxit.support@atomicmail.io">flabaxxit.support@atomicmail.io</a></span>
             </div>
         </main>
-        <footer class="h-[10vh] w-auto row-[3] bg-[#212830] text-center font-[JetBrains_Mono]" id="footer">
-            <div class="mr-auto flex flex-col">
-                <a class="m-[5px] text-[#6f6f76]" href="/privacy-policy">Privacy Policy</a>
-                <a class="m-[5px] text-[#6f6f76]" href="/terms-of-use">Terms of use</a>
-                <a class="m-[5px] text-[#6f6f76]" href="/user-agreement">User agreement</a>
-                <a class="m-[5px] ml-auto mr-auto" href="https://github.com/AsyncClyud/FlaBaxxit-mobile-app/releases/download/alpha/flabaxxit-v1.0.apk"><img src="/static/images/android.svg" alt="Logo"></a>
-                <p class="text-[#6f6f76]">&copy; 2026 FlaBaxxit. All copyright reversed.</p>
+        <footer class="h-fit w-auto bg-[#f4f4eb] dark:bg-[#212830] text-center font-[JetBrains_Mono] row-[3]" id="footer">
+            <div>
+                <div class="flex flex-row content-center justify-center justify-items-center">
+                <a class="m-[5px] text-[12px] text-[#6f6f76]" href="/privacy-policy">Privacy Policy</a>
+                <a class="m-[5px] text-[12px] text-[#6f6f76]" href="/terms-of-use">Terms of use</a>
+                <a class="m-[5px] text-[12px] text-[#6f6f76]" href="/user-agreement">User agreement</a>
+                </div>
+                <div class="flex flex-col ml-auto mr-auto">
+                    <a class="m-[5px] ml-auto mr-auto" href="https://github.com/AsyncClyud/FlaBaxxit-mobile-app/releases/download/alpha/flabaxxit-v1.0.apk"><img src="/static/images/android.svg" alt="Flabaxxit Android app download"></a>
+                    <p class="text-[#6f6f76]">&copy; 2026 FlaBaxxit. All copyright reversed.</p>
+                </div>
             </div>
         </footer>
     </body>

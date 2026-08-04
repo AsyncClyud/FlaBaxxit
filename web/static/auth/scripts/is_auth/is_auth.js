@@ -8,9 +8,6 @@ export async function IsAuth() {
     if (data.authorized == true) {
       window.location.replace("/profile")
     }
-    else {
-      console.log("Unauthorized")
-    }
   }
 }
 
