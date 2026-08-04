@@ -37,19 +37,19 @@
         <a class="bg-[#2a323c] text-[gainsboro] rounded-[3px] p-[5px] m-[5px]" href="/auth/login">Log in</a>
     </header>
     <main class="w-[70vw] grid grid-rows-[auto_auto_auto_auto] text-[#d1d7e0] text-center font-[JetBrains_Mono] m-[10px] mr-auto ml-auto p-6 content-center justify-center justify-items-center" id="main">
-        <div class="h-fit w-[50vw] bg-[#212121] outline-[2px] outline-solid outline-[#333c46] rounded-[5px]" id="register">
-            <h3 class="text-[3vh] m-[10px]">Username</h3>
+        <div class="h-fit w-[50vw] bg-[#f4f4eb] dark:bg-[#212121] outline-[2px] outline-solid outline-[#333c46] rounded-[5px]" id="register">
+            <h3 class="text-[black] dark:text-[white] text-[3vh] m-[10px]">Username</h3>
             <input class="w-[30vw] bg-[white] text-[black] rounded-[2px]" type="text" placeholder="Username..." id="username"> <br>
-            <h3 class="text-[3vh] m-[10px]">Password</h3>
+            <h3 class="text-[black] dark:text-[white] text-[3vh] m-[10px]">Password</h3>
             <input class="w-[30vw] bg-[white] text-[black] rounded-[2px]" type="password" placeholder="Password..." id="password"> <br>
-            <p class="text-[15px] m-[10px]">By registration, you agree with <a class="text-[#017cff]" href="/user-agreement">User agreement</a>, <a class="text-[#017cff]" href="/privacy-policy">Privacy Policy</a> and <a class="text-[#017cff]" href="/terms-of-use">Terms of use</a> </p>
+            <p class="text-[black] dark:text-[white] text-[15px] m-[10px]">By registration, you agree with <a class="text-[#017cff]" href="/user-agreement">User agreement</a>, <a class="text-[#017cff]" href="/privacy-policy">Privacy Policy</a> and <a class="text-[#017cff]" href="/terms-of-use">Terms of use</a> </p>
             <div class="flex flex-row text-[13px] m-[10px] content-center justify-center justify-items-center">
                 <p class="text-[#ababab]">I accept the <a class="text-[#017cff]" href="/user-agreement">User agreement</a>, <a class="text-[#017cff]" href="/privacy-policy">Privacy Policy</a> and <a class="text-[#017cff]" href="/terms-of-use">Terms of use</a></p>
                 <input class="ml-[10px]" type="checkbox" id="agree_button" onclick="SetAgreeValue()" value="not agree">
             </div>
             <button class="w-fit bg-[white] text-[black] text-[JetBrains_Mono] rounded-[3px] m-[10px] p-[5px]" type="button" onclick="SendRegisterRequest()">Register</button>
             <p id="status"></p>
-            <div class="cf-turnstile" id="turnstile-widget" data-sitekey="0x4AAAAAAD2vzJ6mzrrweUrN" data-theme="dark" data-size="compact"></div>
+            <div class="cf-turnstile" id="turnstile-widget" data-sitekey="0x4AAAAAAD9i83m-xS3y164A" data-theme="dark" data-size="compact"></div>
         </div>
     </main>
     <footer class="h-[10vh] w-auto row-[3] bg-[#f4f4eb] dark:bg-[#212830] text-center font-[JetBrains_Mono]" id="footer">
