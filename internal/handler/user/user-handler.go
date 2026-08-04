@@ -166,5 +166,4 @@ func (ush *UserHandler) GetArticleAuthorHandler(c *gin.Context) {
 func (ush *UserHandler) FetchUserProfile(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
 
-
 }

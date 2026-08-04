@@ -18,6 +18,7 @@ type Config struct {
 	Port              string
 }
 
+// Loading config from .env file.
 func Load() *Config {
 
 	cfg := &Config{
@@ -39,6 +40,7 @@ func Load() *Config {
 	return cfg
 }
 
+// Returns database connection string
 func (c *Config) DSN() string {
 	return fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
@@ -46,6 +48,12 @@ func (c *Config) DSN() string {
 	)
 }
 
+// Returns redis URL
+func (c *Config) RedisURL() string {
+	return os.Getenv("REDIS_URL")
+}
+
+// Get env by argument
 func getEnv(key, fallback string) string {
 	if value := os.Getenv(key); value != "" {
 		return value

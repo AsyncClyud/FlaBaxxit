@@ -13,7 +13,7 @@ import (
 )
 
 type PostRepository struct {
-	db *pgxpool.Pool
+	db  *pgxpool.Pool
 	rdb *redis.Client
 }
 
@@ -21,6 +21,7 @@ func NewPostRepo(db *pgxpool.Pool, rdb *redis.Client) *PostRepository {
 	return &PostRepository{db: db, rdb: rdb}
 }
 
+// Returns slice with all articles from redis cache or from database (if cache is empty).
 func (pr *PostRepository) GetAllArticles(ctx context.Context) (all_articles []models.ArticleWithAuthor) {
 	articlesCacheKey := "articles:list"
 
@@ -37,14 +38,13 @@ func (pr *PostRepository) GetAllArticles(ctx context.Context) (all_articles []mo
         p.id, p.title,
         u.id, u.username, u.profile_pic
     FROM posts p
-    JOIN users u ON u.id = p.author`
+    JOIN users u ON u.id = p.author
+    ORDER BY p.id DESC`
 
 	rows, err := pr.db.Query(ctx, query)
 	if err != nil {
-		log.Println("Rows error:", err)
-		rows.Err()
+		log.Printf("Rows error: %v", err)
 	}
-	defer rows.Close()
 
 	articles := []models.ArticleWithAuthor{}
 	for rows.Next() {
@@ -64,6 +64,7 @@ func (pr *PostRepository) GetAllArticles(ctx context.Context) (all_articles []mo
 	return articles
 }
 
+// Return article by id argument from redis cache or from database (if cache is empty).
 func (pr *PostRepository) GetArticleById(ctx context.Context, Id int) (articles models.ArticleWithAuthor) {
 	articleCacheKey := strconv.Itoa(Id)
 
@@ -83,19 +84,10 @@ func (pr *PostRepository) GetArticleById(ctx context.Context, Id int) (articles 
     JOIN users u ON u.id = p.author
     WHERE p.id = $1`
 
-	rows, err := pr.db.Query(ctx, query, Id)
-	if err != nil {
-		log.Println("Rows error:", err)
-		rows.Err()
-	}
-	defer rows.Close()
-
 	var article models.ArticleWithAuthor
-	for rows.Next() {
-		err := rows.Scan(&article.Title, &article.Content, &article.Created_at, &article.Author_Id, &article.Author_Username, &article.Author_Avatar)
-		if err != nil {
-			log.Println(err)
-		}
+	rows_err := pr.db.QueryRow(ctx, query, Id).Scan(&article.Title, &article.Content, &article.Created_at, &article.Author_Id, &article.Author_Username, &article.Author_Avatar)
+	if rows_err != nil {
+		log.Println("Rows error:", err)
 	}
 
 	data, err := json.Marshal(article)
@@ -107,6 +99,7 @@ func (pr *PostRepository) GetArticleById(ctx context.Context, Id int) (articles 
 	return article
 }
 
+// Insert article in database and delete articles:list from cache.
 func (pr *PostRepository) InsertArticle(ctx context.Context, article models.Article, author int) {
 	articlesCacheKey := "articles:list"
 	_, err := pr.db.Exec(
@@ -118,6 +111,7 @@ func (pr *PostRepository) InsertArticle(ctx context.Context, article models.Arti
 	pr.rdb.Del(ctx, articlesCacheKey)
 }
 
+// Update article by argument id in database and delete articles:list from cache.
 func (pr *PostRepository) UpdateArticle(ctx context.Context, article models.Article) {
 	articleCacheKey := strconv.Itoa(article.Id)
 	_, err := pr.db.Exec(
@@ -129,6 +123,7 @@ func (pr *PostRepository) UpdateArticle(ctx context.Context, article models.Arti
 	log.Printf("Updated article with title: %v", article.Title)
 }
 
+// Delete article by argument id in database and delete articles:list from cache.
 func (pr *PostRepository) DeleteArticle(ctx context.Context, article models.Article) {
 	articlesCacheKey := "articles:list"
 	_, err := pr.db.Exec(ctx, "DELETE FROM Posts WHERE Id = $1", article.Id)

@@ -6,7 +6,7 @@ type User struct {
 	Password        string  `json:"Password"`
 	Bio             *string `json:"Bio"`
 	Created_at      *string `json:"Created_at"`
-	Profile_pic int `json:"Profile_pic"`
+	Profile_pic     int     `json:"Profile_pic"`
 	Turnstile_token string  `json:"Turnstile_token"`
 }
 
@@ -34,7 +34,7 @@ type Comment struct {
 	Comment_content string  `json:"Comment_content"`
 	Created_at      *string `json:"Created_at"`
 	Post_id         int     `json:"Post_id"`
-	Author_Id          int     `json:"Author_Id"`
+	Author_Id       int     `json:"Author_Id"`
 	Author_Username string  `json:"Author_Username"`
 	Author_Avatar   int     `json:"Author_Avatar"`
 	Turnstile_token string  `json:"Turnstile_token"`

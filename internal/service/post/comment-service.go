@@ -7,7 +7,6 @@ import (
 	"net/http"
 )
 
-
 func (pr PostService) ValidateComment(comment models.Comment) (status_code int) {
 	if len(comment.Comment_content) == 0 {
 		return http.StatusBadRequest

@@ -16,7 +16,6 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
-	"github.com/redis/go-redis/v9"
 )
 
 func main() {
@@ -27,8 +26,7 @@ func main() {
 
 	cfg := config.Load()
 	ctx := context.Background()
-	redis_url, _ := redis.ParseURL(os.Getenv("REDIS_URL"))
-	rdb := storage.ConnectRedis(ctx, redis_url)
+	rdb := storage.ConnectRedis(ctx, cfg.RedisURL())
 	db := storage.ConnectDataBase(ctx, os.Getenv("DATABASE_URL"))
 	defer db.Close()
 

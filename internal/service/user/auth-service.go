@@ -39,7 +39,7 @@ func (ur *AuthService) Generate_Token(id int) (token string, err error) {
 func (ur *AuthService) Validate_Token(tokenString string) (Id int, err error) {
 	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (any, error) {
 		return ur.secret_key, nil
-	})
+	}, jwt.WithValidMethods([]string{jwt.SigningMethodHS512.Alg()}));
 	if err != nil {
 		return 0, fmt.Errorf("Parsing error: %v", err)
 	}
@@ -104,7 +104,7 @@ func (ur *AuthService) Login(ctx context.Context, user models.User) (status_code
 	}
 	id, hashed_password, ok := ur.repo.CheckIfUserExist(ctx, user)
 	if !ok {
-		return http.StatusNotFound, 0
+		return http.StatusBadRequest, 0
 	}
 	if ur.CheckPaswordHash(user.Password, hashed_password) != nil {
 		return http.StatusNotFound, 0

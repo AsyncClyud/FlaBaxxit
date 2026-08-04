@@ -14,7 +14,7 @@ func (ush *UserHandler) IsAuth(c *gin.Context) {
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"authorized": false,
-			"userID": 0,
+			"userID":     0,
 		})
 		return
 	}
@@ -22,7 +22,7 @@ func (ush *UserHandler) IsAuth(c *gin.Context) {
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"authorized": false,
-			"userID": 0,
+			"userID":     0,
 		})
 		return
 	}

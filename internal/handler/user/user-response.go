@@ -47,8 +47,6 @@ func ResponseLogin(status_code int, c *gin.Context) {
 		FormatIntoJson(c, http.StatusNotFound, "Invalid password!")
 	case http.StatusNotAcceptable:
 		FormatIntoJson(c, http.StatusNotAcceptable, "Username can only contain letters, numbers!")
-	case http.StatusConflict:
-		FormatIntoJson(c, http.StatusConflict, "Account with this username already exist!")
 	case http.StatusUnprocessableEntity:
 		FormatIntoJson(c, http.StatusUnprocessableEntity, "Password must be at least 6 characters long!")
 	case http.StatusBadGateway:

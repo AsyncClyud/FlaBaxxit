@@ -18,37 +18,43 @@ func NewAuthMiddleware(service userservice.AuthService) *Middleware {
 }
 
 func (md Middleware) SecureHeaders() gin.HandlerFunc {
-	return func(ctx *gin.Context) {
-		ctx.Header("X-Content-Type-Options", "nosniff")
-		ctx.Header("Referrer-Policy", "strict-origin-when-cross-origin")
-		ctx.Header("Permissions-Policy", "geolocation=(), microphone=(), camera=()")
-		ctx.Header("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
+	return func(c *gin.Context) {
+		c.Header("X-Content-Type-Options", "nosniff")
+		c.Header("X-Frame-Options", "DENY")
+		c.Header("Referrer-Policy", "strict-origin-when-cross-origin")
+		c.Header("Permissions-Policy", "geolocation=(), microphone=(), camera=()")
+		c.Header("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
+		c.Header("Cross-Origin-Opener-Policy", "same-origin")
+		c.Header("Cross-Origin-Resource-Policy", "same-origin")
 
-		ctx.Next()
+		c.Next()
 	}
 }
 
 func (md Middleware) RequireAuth() gin.HandlerFunc {
-	return func(ctx *gin.Context) {
-		ctx.Header("X-Content-Type-Options", "nosniff")
-		ctx.Header("Referrer-Policy", "strict-origin-when-cross-origin")
-		ctx.Header("Permissions-Policy", "geolocation=(), microphone=(), camera=()")
-		ctx.Header("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
+	return func(c *gin.Context) {
+		c.Header("X-Content-Type-Options", "nosniff")
+		c.Header("X-Frame-Options", "DENY")
+		c.Header("Referrer-Policy", "strict-origin-when-cross-origin")
+		c.Header("Permissions-Policy", "geolocation=(), microphone=(), camera=()")
+		c.Header("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
+		c.Header("Cross-Origin-Opener-Policy", "same-origin")
+		c.Header("Cross-Origin-Resource-Policy", "same-origin")
 
-		cookie, err := ctx.Cookie("jwt-token")
+		cookie, err := c.Cookie("jwt-token")
 		if err != nil {
-			ctx.AbortWithError(http.StatusUnauthorized, err)
+			c.AbortWithError(http.StatusUnauthorized, err)
 			return
 		}
 		claims, err := md.Middleware.Validate_Token(cookie)
 		if err != nil {
-			ctx.AbortWithError(http.StatusUnauthorized, err)
+			c.AbortWithError(http.StatusUnauthorized, err)
 			return
 		}
 
-		c := context.WithValue(ctx.Request.Context(), contextutil.UserIDKey, claims)
-		ctx.Request = ctx.Request.WithContext(c)
+		ctx := context.WithValue(c.Request.Context(), contextutil.UserIDKey, claims)
+		c.Request = c.Request.WithContext(ctx)
 
-		ctx.Next()
+		c.Next()
 	}
 }

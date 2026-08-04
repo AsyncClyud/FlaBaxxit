@@ -9,6 +9,7 @@ import (
 	"time"
 )
 
+// Returns slice with all article comments from redis cache or from database (if cache is empty).
 func (pr *PostRepository) GetArticleCommentsById(ctx context.Context, id int) (article_comments []models.Comment) {
 	comments_id := strconv.Itoa(id) + ":list"
 
@@ -55,6 +56,7 @@ func (pr *PostRepository) GetArticleCommentsById(ctx context.Context, id int) (a
 
 }
 
+// Insert article in database and delete {Id}:list from cache.
 func (pr *PostRepository) InsertComment(ctx context.Context, comment models.Comment, author int) {
 	comments_id := strconv.Itoa(comment.Post_id) + ":list"
 	_, err := pr.db.Exec(
